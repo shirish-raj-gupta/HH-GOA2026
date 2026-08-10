@@ -20,7 +20,7 @@ export const PhotoAdjuster: React.FC<PhotoAdjusterProps> = ({
     <div className="border-2 border-[#F5F0E1]/10 rounded-lg p-4 bg-goa-green-deep space-y-4">
       <div className="flex justify-between items-center border-b border-[#F5F0E1]/10 pb-2">
         <span className="font-mono text-xs text-goa-gold uppercase tracking-wider">
-          // PHOTO PARAMETERS
+          
         </span>
         <button
           type="button"

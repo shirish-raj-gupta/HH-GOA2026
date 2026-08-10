@@ -75,7 +75,6 @@ export async function fetchSuggestedTitles(name: string, role: string, building:
     console.warn('API title generation fallback to client pool:', err);
   }
 
-  // Fallback
   const shuffled = [...CURATED_TITLES.default].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, 3);
 }

@@ -1,8 +1,5 @@
 import heic2any from 'heic2any';
 
-/**
- * Converts HEIC/HEIF file to JPEG Blob/File
- */
 export async function convertHeicToJpeg(file: File): Promise<File> {
   const extension = file.name.split('.').pop()?.toLowerCase();
   const isHeic = extension === 'heic' || extension === 'heif' || file.type.includes('heic') || file.type.includes('heif');

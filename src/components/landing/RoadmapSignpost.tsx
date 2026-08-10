@@ -5,7 +5,7 @@ export const RoadmapSignpost: React.FC = () => {
     <section className="max-w-5xl mx-auto px-4 sm:px-8 relative z-10 py-6">
       <div className="text-center mb-6 space-y-1">
         <span className="font-mono text-xs text-goa-pink uppercase tracking-widest font-bold">
-          /// EVENT MILESTONES & NUMBERS
+          
         </span>
         <h2 className="font-display text-4xl sm:text-5xl font-black text-goa-gold uppercase tracking-tight">
           THE ROADMAP TO GOA

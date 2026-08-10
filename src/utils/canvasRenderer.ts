@@ -220,12 +220,10 @@ function drawAvatarSilhouetteOnCanvas(
   ctx.scale(scale, scale);
   ctx.fillStyle = color;
 
-  // Head
   ctx.beginPath();
   ctx.arc(0, -25, 26, 0, Math.PI * 2);
   ctx.fill();
 
-  // Shoulders & Body Curve
   ctx.beginPath();
   ctx.moveTo(-52, 52);
   ctx.bezierCurveTo(-52, 10, -32, 2, 0, 2);
@@ -495,7 +493,6 @@ export async function renderBuilderCard({
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // Dynamic font sizing for Name to prevent overflow
   let nameFontSize = 52;
   const maxNameWidth = width - 200;
   ctx.font = `900 ${nameFontSize}px Anybody, "Victor Mono", sans-serif`;
@@ -505,7 +502,6 @@ export async function renderBuilderCard({
   }
   ctx.fillText(rawName, width / 2, nameY);
 
-  // Role Pill
   const roleY = stubY + 165;
   const roleH = 54;
   const hasRole = Boolean(builderState.role && builderState.role.trim());
@@ -525,7 +521,6 @@ export async function renderBuilderCard({
   }
   ctx.fillText(roleText, width / 2, roleY + roleH / 2);
 
-  // Title Box
   const titleY = stubY + 242;
   const titleH = 54;
   const hasTitle = Boolean(builderState.title && builderState.title.trim());

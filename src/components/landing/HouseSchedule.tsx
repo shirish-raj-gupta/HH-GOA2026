@@ -5,7 +5,7 @@ export const HouseSchedule: React.FC = () => {
     <section className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 pt-8 space-y-8">
       <div className="text-center space-y-1">
         <span className="font-mono text-xs text-goa-pink uppercase tracking-widest font-bold">
-          /// 4 DAYS · ONE INTENTIONAL RHYTHM
+          
         </span>
         <h2 className="font-display text-4xl sm:text-5xl font-black text-goa-gold uppercase tracking-tight">
           HOUSE SCHEDULE

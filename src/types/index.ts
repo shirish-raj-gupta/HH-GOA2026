@@ -9,7 +9,7 @@ export interface PhotoState {
   offsetX: number;
   offsetY: number;
   bwFilter: boolean;
-  aspectRatio: number; // width / height of uploaded image
+  aspectRatio: number; 
 }
 
 export interface BuilderState {

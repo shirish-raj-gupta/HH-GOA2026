@@ -23,7 +23,6 @@ export default function App() {
   const [step, setStep] = useState<AppStep>('LANDING');
   const [mode, setMode] = useState<CreationMode>('builder');
 
-  // Photo state
   const [photoState, setPhotoState] = useState<PhotoState>({
     file: null,
     sourceUrl: null,
@@ -34,7 +33,6 @@ export default function App() {
     aspectRatio: 1,
   });
 
-  // Builder card state (blank details by default, with random unique Builder ID UID)
   const [builderState, setBuilderState] = useState<BuilderState>({
     name: '',
     role: '',
@@ -49,7 +47,6 @@ export default function App() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [shareIdFromUrl, setShareIdFromUrl] = useState<string | null>(null);
 
-  // Check URL params for shared card
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const shareId = params.get('shareId');
@@ -122,7 +119,6 @@ export default function App() {
     setStep('STUDIO');
   };
 
-  // Show loading screen
   if (isLoading) {
     return <LoadingScreen onComplete={handleLoadingComplete} />;
   }

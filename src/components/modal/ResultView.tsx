@@ -189,7 +189,7 @@ ${shareUrl}
         <div className="md:col-span-5 bg-goa-green-deep border-2 border-[#F5F0E1]/10 rounded-lg p-6 space-y-6">
           <div className="border-b border-[#F5F0E1]/10 pb-3">
             <span className="font-mono text-xs text-goa-gold uppercase tracking-wider block">
-              // ACTION CENTER
+              
             </span>
             <div className="font-display font-extrabold text-xl text-[#F5F0E1] uppercase mt-1">
               SHARE & EXPORT
