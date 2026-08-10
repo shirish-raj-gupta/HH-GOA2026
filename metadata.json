@@ -1,0 +1,6 @@
+{
+  "name": "HH GOA 2026 — FRAME IN GOA",
+  "description": "Official photo frame and builder identity generator for Hacker House Goa 2026. Turn your photo into a branded PFP or Builder ID card in seconds.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+@theme {
+  /* === Typography === */
+  --font-display: 'Imbue', serif;
+  --font-display-alt: 'Anybody', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Victor Mono', 'JetBrains Mono', monospace;
+
+  /* === Color Palette (hhgoa.com inspired) === */
+  --color-goa-green: #1A6B3C;
+  --color-goa-green-deep: #0D3D22;
+  --color-goa-green-light: #238B4E;
+  --color-goa-gold: #E8C840;
+  --color-goa-gold-dim: #C4A832;
+  --color-goa-pink: #FF2D78;
+  --color-goa-pink-dim: #D9266A;
+  --color-goa-cream: #F5F0E1;
+  --color-goa-cream-dark: #E8E0C8;
+  --color-goa-text: #F5F0E1;
+  --color-goa-text-muted: rgba(245, 240, 225, 0.6);
+  --color-goa-border: rgba(245, 240, 225, 0.15);
+  --color-goa-surface: #145A32;
+}
+
+/* =============================================
+   GLOBAL STYLES
+   ============================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #1A6B3C;
+  color: #F5F0E1;
+}
+
+/* =============================================
+   LOADING SCREEN ANIMATIONS
+   ============================================= */
+
+@keyframes sun-rise {
+  0% { transform: translateY(80px) scale(0.6); opacity: 0; }
+  60% { transform: translateY(10px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(0px) scale(1); opacity: 1; }
+}
+
+@keyframes palm-sway-left {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes palm-sway-right {
+  0%, 100% { transform: rotate(3deg); }
+  50% { transform: rotate(-3deg); }
+}
+
+@keyframes text-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-in-bottom {
+  0% { transform: translateY(100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes loader-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 45, 120, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(255, 45, 120, 0.6); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-sun-rise {
+  animation: sun-rise 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-palm-left {
+  animation: palm-sway-left 4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-palm-right {
+  animation: palm-sway-right 4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-slide-in-bottom {
+  animation: slide-in-bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-loader-progress {
+  animation: loader-progress 2.5s ease-out forwards;
+}
+
+/* Stagger delays for child animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.35s; }
+.stagger-4 { animation-delay: 0.5s; }
+.stagger-5 { animation-delay: 0.7s; }
+
+/* =============================================
+   BACKGROUND PATTERNS
+   ============================================= */
+
+.grid-bg-gold {
+  background-image:
+    linear-gradient(to right, rgba(232, 200, 64, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(232, 200, 64, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dot-bg-gold {
+  background-image: radial-gradient(rgba(232, 200, 64, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* =============================================
+   SCANLINES & TERMINAL EFFECTS
+   ============================================= */
+
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.15)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 12px;
+  height: 1em;
+  background-color: #E8C840;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 6px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* =============================================
+   SCROLLBAR (green theme)
+   ============================================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0D3D22;
+}
+::-webkit-scrollbar-thumb {
+  background: #238B4E;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E8C840;
+}
+
+/* =============================================
+   MATERIAL ICONS
+   ============================================= */
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined.fill-1 {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* =============================================
+   CTA BUTTON STYLES
+   ============================================= */
+
+.btn-pink {
+  background-color: #FF2D78;
+  color: #FFFFFF;
+  font-family: 'Victor Mono', 'JetBrains Mono', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid #FF2D78;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-pink:hover {
+  background-color: #E8C840;
+  color: #0D3D22;
+  border-color: #E8C840;
+}
+
+.btn-gold-outline {
+  background-color: transparent;
+  color: #E8C840;
+  font-family: 'Victor Mono', 'JetBrains Mono', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid #E8C840;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-gold-outline:hover {
+  background-color: #E8C840;
+  color: #0D3D22;
+}
+
+/* =============================================
+   PIN DECORATION (notice board style from hhgoa.com)
+   ============================================= */
+
+.pin-pink::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  background: #FF2D78;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+.pin-gold::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  background: #E8C840;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+/* =============================================
+   FORM INPUT STYLES
+   ============================================= */
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #145A32;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #E8C840;
+  cursor: pointer;
+  border: 2px solid #0D3D22;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #E8C840;
+  cursor: pointer;
+  border: 2px solid #0D3D22;
+}

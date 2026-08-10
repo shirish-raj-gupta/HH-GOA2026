@@ -1,0 +1,267 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { Header } from './components/Header';
+import { LandingHero } from './components/LandingHero';
+import { FormatSelector } from './components/FormatSelector';
+import { PhotoUploader } from './components/PhotoUploader';
+import { PhotoAdjuster } from './components/PhotoAdjuster';
+import { BuilderDetailsForm } from './components/BuilderDetailsForm';
+import { PreviewCanvas } from './components/PreviewCanvas';
+import { GeneratingLoader } from './components/GeneratingLoader';
+import { ResultView } from './components/ResultView';
+import { SharedViewModal } from './components/SharedViewModal';
+import { MobileNav } from './components/MobileNav';
+import { LoadingScreen } from './components/LoadingScreen';
+import { AppStep, BuilderState, CreationMode, GeneratedResult, PhotoState } from './types';
+
+function getRandomBuilderUid(): string {
+  const randNum = Math.floor(1000 + Math.random() * 9000);
+  return `#HH-GOA-${randNum}`;
+}
+
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [step, setStep] = useState<AppStep>('LANDING');
+  const [mode, setMode] = useState<CreationMode>('builder');
+
+  // Photo state
+  const [photoState, setPhotoState] = useState<PhotoState>({
+    file: null,
+    sourceUrl: null,
+    zoom: 1.1,
+    offsetX: 0,
+    offsetY: 0,
+    bwFilter: false,
+    aspectRatio: 1,
+  });
+
+  // Builder card state (blank details by default, with random unique Builder ID UID)
+  const [builderState, setBuilderState] = useState<BuilderState>({
+    name: '',
+    role: '',
+    building: '',
+    title: '',
+    tags: ['RUST', 'ZK_SNARKS', 'GOA'],
+    builderId: getRandomBuilderUid(),
+  });
+
+  const [renderedDataUrl, setRenderedDataUrl] = useState<string | null>(null);
+  const [generatedResult, setGeneratedResult] = useState<GeneratedResult | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [shareIdFromUrl, setShareIdFromUrl] = useState<string | null>(null);
+
+  // Check URL params for shared card
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shareId = params.get('shareId');
+    if (shareId) {
+      setShareIdFromUrl(shareId);
+    }
+  }, []);
+
+  const handleLoadingComplete = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+
+  const handleStartFlow = (selectedMode: CreationMode) => {
+    setMode(selectedMode);
+    setStep('STUDIO');
+  };
+
+  const handleNavigate = (targetStep: AppStep, targetMode?: CreationMode) => {
+    if (targetMode) setMode(targetMode);
+    setStep(targetStep);
+  };
+
+  const handlePhotoSelected = (file: File, sourceUrl: string, aspectRatio: number) => {
+    setPhotoState((prev) => ({
+      ...prev,
+      file,
+      sourceUrl,
+      aspectRatio,
+      zoom: 1.1,
+      offsetX: 0,
+      offsetY: 0,
+    }));
+  };
+
+  const handleUpdateBuilderState = (updated: Partial<BuilderState>) => {
+    setBuilderState((prev) => ({ ...prev, ...updated }));
+  };
+
+  const handleTriggerGenerate = () => {
+    if (!photoState.file && mode === 'pfp') {
+      setUploadError('Please upload a photo first to generate your PFP frame.');
+      return;
+    }
+    setStep('GENERATING');
+  };
+
+  const handleGenerationComplete = () => {
+    if (renderedDataUrl) {
+      setGeneratedResult({
+        imageDataUrl: renderedDataUrl,
+        blob: null,
+        mode,
+        name: builderState.name,
+        role: builderState.role,
+        title: builderState.title,
+        builderId: builderState.builderId,
+      });
+      setStep('RESULT');
+    } else {
+      setStep('STUDIO');
+    }
+  };
+
+  const handleMakeAnother = () => {
+    setGeneratedResult(null);
+    setBuilderState((prev) => ({
+      ...prev,
+      builderId: getRandomBuilderUid(),
+    }));
+    setStep('STUDIO');
+  };
+
+  // Show loading screen
+  if (isLoading) {
+    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-goa-green text-[#F5F0E1] font-body flex flex-col selection:bg-goa-pink selection:text-white relative pb-16 md:pb-0">
+      {/* Subtle grid pattern */}
+      <div className="fixed inset-0 grid-bg-gold pointer-events-none opacity-30 z-0" />
+
+      {/* Shared Card Modal Overlay if URL has shareId */}
+      {shareIdFromUrl && (
+        <SharedViewModal
+          shareId={shareIdFromUrl}
+          onCloseAndCreateOwn={() => {
+            setShareIdFromUrl(null);
+            if (typeof window !== 'undefined' && window.history) {
+              window.history.replaceState({}, '', window.location.pathname);
+            }
+          }}
+        />
+      )}
+
+      {/* Persistent Navigation Header */}
+      <Header
+        currentStep={step}
+        currentMode={mode}
+        onNavigate={handleNavigate}
+      />
+
+      <main className="flex-1 w-full relative z-10">
+        {/* STEP 1: LANDING */}
+        {step === 'LANDING' && (
+          <LandingHero onStart={handleStartFlow} />
+        )}
+
+        {/* STEP 2: STUDIO (Interactive Customization Environment) */}
+        {step === 'STUDIO' && (
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-up">
+            {/* Left Column: Customization Controls */}
+            <div className="lg:col-span-7 space-y-6">
+              <FormatSelector
+                currentMode={mode}
+                onSelectMode={(newMode) => setMode(newMode)}
+              />
+
+              <PhotoUploader
+                photoState={photoState}
+                onPhotoSelected={handlePhotoSelected}
+                onError={(err) => setUploadError(err)}
+                errorMessage={uploadError}
+              />
+
+              {photoState.file && (
+                <PhotoAdjuster
+                  photoState={photoState}
+                  onChangeZoom={(zoom) => setPhotoState((p) => ({ ...p, zoom }))}
+                  onChangeOffset={(offsetX, offsetY) =>
+                    setPhotoState((p) => ({ ...p, offsetX, offsetY }))
+                  }
+                  onToggleBwFilter={(bwFilter) =>
+                    setPhotoState((p) => ({ ...p, bwFilter }))
+                  }
+                  onReset={() =>
+                    setPhotoState((p) => ({ ...p, zoom: 1.1, offsetX: 0, offsetY: 0, bwFilter: false }))
+                  }
+                />
+              )}
+
+              {mode === 'builder' && (
+                <BuilderDetailsForm
+                  builderState={builderState}
+                  onChange={handleUpdateBuilderState}
+                />
+              )}
+
+              {/* Action Button */}
+              <div className="pt-4 border-t border-[#F5F0E1]/10">
+                <button
+                  type="button"
+                  onClick={handleTriggerGenerate}
+                  className="btn-pink w-full text-base py-4 px-8 flex items-center justify-center gap-3 animate-pulse-glow rounded-lg"
+                >
+                  <span>
+                    {mode === 'pfp' ? 'GENERATE PFP FRAME →' : 'GENERATE BUILDER ID CARD →'}
+                  </span>
+                </button>
+
+                <div className="text-center font-mono text-[11px] text-[#F5F0E1]/40 mt-2">
+                  Instant browser composition • No login needed
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Live Interactive Canvas Preview */}
+            <div className="lg:col-span-5 lg:sticky lg:top-24 h-fit">
+              <PreviewCanvas
+                mode={mode}
+                photoState={photoState}
+                builderState={builderState}
+                onRenderedDataUrlChange={(dataUrl) => setRenderedDataUrl(dataUrl)}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3: GENERATING LOG SEQUENCE */}
+        {step === 'GENERATING' && (
+          <GeneratingLoader onComplete={handleGenerationComplete} />
+        )}
+
+        {/* STEP 4: RESULT & SHARE / EXPORT */}
+        {step === 'RESULT' && generatedResult && (
+          <ResultView
+            result={generatedResult}
+            onMakeAnother={handleMakeAnother}
+          />
+        )}
+      </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        currentStep={step}
+        currentMode={mode}
+        onNavigate={handleNavigate}
+        onGenerateClick={handleTriggerGenerate}
+        canGenerate={Boolean(photoState.file || mode === 'builder')}
+      />
+
+      {/* Footer Branding */}
+      <footer className="w-full border-t border-[#F5F0E1]/10 bg-goa-green-deep py-6 px-4 mt-auto relative z-10">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 font-mono text-xs text-[#F5F0E1]/50">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-goa-gold rounded-full" />
+            <span>HH GOA 2026 // HACKER HOUSE GOA</span>
+          </div>
+          <div>GOA, INDIA • 28 — 31 OCT 2026</div>
+          <div className="text-goa-gold/70">2:47 PM STUDIO</div>
+        </div>
+      </footer>
+    </div>
+  );
+}
