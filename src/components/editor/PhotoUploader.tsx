@@ -96,8 +96,8 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
     <div className="w-full space-y-3">
       <div className="font-mono text-xs text-goa-gold uppercase tracking-wider flex items-center justify-between">
         <span>02 // UPLOAD PHOTO</span>
-        <span className="text-[#F5F0E1]/30 text-[10px]">
-          {photoState.file ? 'PHOTO LOADED ✦' : 'JPG · PNG · HEIC'}
+        <span className="text-goa-pink text-[10px] font-bold">
+          {photoState.file ? 'PHOTO LOADED ✦' : '[REQUIRED]'}
         </span>
       </div>
 

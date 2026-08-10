@@ -86,8 +86,8 @@ export default function App() {
   };
 
   const handleTriggerGenerate = () => {
-    if (!photoState.file && mode === 'pfp') {
-      setUploadError('Please upload a photo first to generate your PFP frame.');
+    if (!photoState.file) {
+      setUploadError('Please upload your photo first to generate your Builder Card.');
       return;
     }
     setStep('GENERATING');
@@ -125,8 +125,16 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-goa-green text-[#F5F0E1] font-body flex flex-col selection:bg-goa-pink selection:text-white relative pb-16 md:pb-0">
-      {/* Subtle grid pattern */}
-      <div className="fixed inset-0 grid-bg-gold pointer-events-none opacity-30 z-0" />
+      {/* Persistent Tropical Goa Beach Background Layer */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <img
+          src="/assets/image.png"
+          alt="Tropical Goa Beach Background"
+          className="w-full h-full object-cover object-top opacity-30 filter contrast-110 saturate-125"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-goa-green-deep/80 via-goa-green-deep/70 to-goa-green-deep/90" />
+        <div className="absolute inset-0 grid-bg-gold opacity-20" />
+      </div>
 
       {/* Shared Card Modal Overlay if URL has shareId */}
       {shareIdFromUrl && (
@@ -244,7 +252,7 @@ export default function App() {
         currentMode={mode}
         onNavigate={handleNavigate}
         onGenerateClick={handleTriggerGenerate}
-        canGenerate={Boolean(photoState.file || mode === 'builder')}
+        canGenerate={Boolean(photoState.file)}
       />
 
       {/* Footer Branding */}

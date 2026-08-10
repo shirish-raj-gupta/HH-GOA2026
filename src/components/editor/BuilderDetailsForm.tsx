@@ -104,7 +104,7 @@ export const BuilderDetailsForm: React.FC<BuilderDetailsFormProps> = ({
               <span className={`material-symbols-outlined text-sm ${isGeneratingTitle ? 'animate-spin' : ''}`}>
                 autorenew
               </span>
-              <span>{isGeneratingTitle ? 'GENERATING...' : '↻ REGENERATE TITLE'}</span>
+              <span>{isGeneratingTitle ? 'GENERATING...' : 'REGENERATE TITLE'}</span>
             </button>
           </div>
 
