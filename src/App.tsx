@@ -12,6 +12,7 @@ import { SharedViewModal } from './components/SharedViewModal';
 import { MobileNav } from './components/MobileNav';
 import { LoadingScreen } from './components/LoadingScreen';
 import { AppStep, BuilderState, CreationMode, GeneratedResult, PhotoState } from './types';
+import heroBgImg from '../assets/image.png';
 
 function getRandomBuilderUid(): string {
   const randNum = Math.floor(1000 + Math.random() * 9000);
@@ -128,7 +129,7 @@ export default function App() {
       {/* Persistent Tropical Goa Beach Background Layer */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <img
-          src="/assets/image.png"
+          src={heroBgImg}
           alt="Tropical Goa Beach Background"
           className="w-full h-full object-cover object-top opacity-30 filter contrast-110 saturate-125"
         />

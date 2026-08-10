@@ -4,6 +4,7 @@ import { HeroCardPreview } from './HeroCardPreview';
 import { RoadmapSignpost } from './RoadmapSignpost';
 import { HouseSchedule } from './HouseSchedule';
 import { NoticeBoard } from './NoticeBoard';
+import heroBgImg from '../../../assets/image.png';
 
 interface LandingHeroProps {
   onStart: (mode: CreationMode) => void;
@@ -18,7 +19,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onStart }) => {
           {/* Edge-to-Edge Background Poster Artwork */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
             <img
-              src="/assets/image.png"
+              src={heroBgImg}
               alt="Hacker House Goa 2026 Poster Background"
               className="w-full h-full object-cover object-top opacity-40 filter contrast-110 saturate-125 transition-opacity duration-1000"
             />
