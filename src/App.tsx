@@ -52,6 +52,7 @@ export default function App() {
     title: string;
     builderId: string;
     mode: 'builder' | 'pfp';
+    imageUrl?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -61,14 +62,16 @@ export default function App() {
     const t = params.get('t') || params.get('title');
     const id = params.get('id') || params.get('shareId');
     const m = (params.get('m') || params.get('mode') || 'builder') as 'builder' | 'pfp';
+    const img = params.get('img') || params.get('image');
 
-    if (n || r || t || id) {
+    if (n || r || t || id || img) {
       setSharedCardFromUrl({
         name: n ? decodeURIComponent(n) : 'GOA BUILDER',
         role: r ? decodeURIComponent(r) : 'HACKER',
         title: t ? decodeURIComponent(t) : 'THE SHIP-IT ENGINEER',
         builderId: id ? decodeURIComponent(id) : '#HH-GOA-2026',
         mode: m,
+        imageUrl: img ? decodeURIComponent(img) : undefined,
       });
     }
   }, []);

@@ -61,6 +61,39 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
     });
   };
 
+  const compressPhotoForUrl = async (dataUrl: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 320;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.65));
+        } else {
+          resolve('');
+        }
+      };
+      img.onerror = () => resolve('');
+      img.src = dataUrl;
+    });
+  };
+
   const getOrGenerateShareUrl = async (): Promise<string> => {
     if (cachedShareUrl) return cachedShareUrl;
 
@@ -70,8 +103,11 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
     const id = encodeURIComponent(result.builderId || '#HH-GOA-2026');
     const m = result.mode || 'builder';
 
+    const compressedImg = await compressPhotoForUrl(result.imageDataUrl);
+    const imgParam = compressedImg ? encodeURIComponent(compressedImg) : '';
+
     const cleanOrigin = window.location.origin.replace(/\/$/, '');
-    const urlStateLink = `${cleanOrigin}/share?n=${n}&r=${r}&t=${t}&id=${id}&m=${m}`;
+    const urlStateLink = `${cleanOrigin}/share?n=${n}&r=${r}&t=${t}&id=${id}&m=${m}${imgParam ? `&img=${imgParam}` : ''}`;
 
     setCachedShareUrl(urlStateLink);
     return urlStateLink;

@@ -9,6 +9,7 @@ export interface SharedCardInfo {
   title: string;
   builderId: string;
   mode?: 'builder' | 'pfp';
+  imageUrl?: string;
   imageDataUrl?: string;
 }
 
@@ -34,9 +35,20 @@ export const SharedViewModal: React.FC<SharedViewModalProps> = ({
     const renderCard = async () => {
       setLoading(true);
 
+      let loadedImage: HTMLImageElement | null = null;
+      if (cardInfo.imageUrl) {
+        loadedImage = await new Promise<HTMLImageElement | null>((resolve) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(null);
+          img.src = cardInfo.imageUrl!;
+        });
+      }
+
       const dummyPhotoState: PhotoState = {
         file: null,
-        sourceUrl: null,
+        sourceUrl: cardInfo.imageUrl || null,
         zoom: 1,
         offsetX: 0,
         offsetY: 0,
@@ -55,7 +67,7 @@ export const SharedViewModal: React.FC<SharedViewModalProps> = ({
 
       try {
         const url = await renderBuilderCard({
-          image: null,
+          image: loadedImage,
           photoState: dummyPhotoState,
           builderState,
         });
