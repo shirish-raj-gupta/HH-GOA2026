@@ -107,7 +107,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         </div>
       </div>
 
-      <div className="relative w-full max-w-110 bg-goa-green-deep border-2 border-goa-gold/30 p-3 shadow-[0_0_40px_rgba(232,200,64,0.1)] rounded-2xl transition-all duration-300 group hover:border-goa-gold hover:shadow-[0_0_50px_rgba(232,200,64,0.25)]">
+      <div className="relative w-full max-w-[580px] xl:max-w-[640px] bg-goa-green-deep border-2 border-goa-gold/40 p-3 sm:p-4 shadow-[0_0_50px_rgba(232,200,64,0.15)] rounded-2xl transition-all duration-300 group hover:border-goa-gold hover:shadow-[0_0_65px_rgba(232,200,64,0.3)]">
         <div className="absolute -top-1 -left-1 w-4 h-4 border-t-3 border-l-3 border-goa-gold rounded-tl-lg" />
         <div className="absolute -top-1 -right-1 w-4 h-4 border-t-3 border-r-3 border-goa-gold rounded-tr-lg" />
         <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-3 border-l-3 border-goa-gold rounded-bl-lg" />

@@ -165,9 +165,9 @@ export default function App() {
 
         {/* STEP 2: STUDIO (Interactive Customization Environment) */}
         {step === 'STUDIO' && (
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-up">
+          <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 animate-fade-up">
             {/* Left Column: Customization Controls */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-6 space-y-6">
               <FormatSelector
                 currentMode={mode}
                 onSelectMode={(newMode) => setMode(newMode)}
@@ -222,7 +222,7 @@ export default function App() {
             </div>
 
             {/* Right Column: Live Interactive Canvas Preview */}
-            <div className="lg:col-span-5 lg:sticky lg:top-24 h-fit">
+            <div className="lg:col-span-6 lg:sticky lg:top-24 h-fit">
               <PreviewCanvas
                 mode={mode}
                 photoState={photoState}
