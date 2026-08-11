@@ -45,7 +45,7 @@ export const SharedViewModal: React.FC<SharedViewModalProps> = ({
   }, [shareId]);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-100 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
       <div className="w-full max-w-md bg-[#072414] border-2 border-goa-gold p-6 relative rounded-3xl shadow-[0_0_60px_rgba(232,200,64,0.2)] text-center my-auto animate-fade-up space-y-4">
         {/* Corner Accents */}
         <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-goa-gold" />
@@ -109,7 +109,7 @@ export const SharedViewModal: React.FC<SharedViewModalProps> = ({
             </div>
 
             {/* Shared Pass Image */}
-            <div className="relative w-full aspect-[4/5] overflow-hidden rounded-2xl border-2 border-goa-gold/50 p-1 bg-goa-green-deep shadow-2xl">
+            <div className="relative w-full aspect-4/5 overflow-hidden rounded-2xl border-2 border-goa-gold/50 p-1 bg-goa-green-deep shadow-2xl">
               <img
                 src={data.imageDataUrl}
                 alt={`${data.name} HH Goa 2026 Pass`}

@@ -23,8 +23,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onStart }) => {
               className="w-full h-full object-cover object-top opacity-40 filter contrast-110 saturate-125 transition-opacity duration-1000"
             />
             {/* Atmospheric Gradient Masks for Perfect Readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#072414]/95 via-[#072414]/75 to-[#072414]/90" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#072414]/50 via-transparent to-[#072414]/95" />
+            <div className="absolute inset-0 bg-linear-to-r from-[#072414]/95 via-[#072414]/75 to-[#072414]/90" />
+            <div className="absolute inset-0 bg-linear-to-b from-[#072414]/50 via-transparent to-[#072414]/95" />
           </div>
 
           {/* Corner Cyber Brackets */}
@@ -34,7 +34,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onStart }) => {
           <div className="absolute bottom-5 right-5 w-5 h-5 border-b-2 border-r-2 border-goa-gold z-20 pointer-events-none" />
 
           {/* Foreground Expansive Content Grid */}
-          <div className="relative z-10 p-6 sm:p-10 lg:p-14 xl:p-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center min-h-[640px]">
+          <div className="relative z-10 p-6 sm:p-10 lg:p-14 xl:p-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center min-h-160">
             {/* Left Column: Expansive Headline, Description & Action CTAs */}
             <div className="lg:col-span-7 flex flex-col justify-center space-y-7">
               {/* Event Location Badge */}

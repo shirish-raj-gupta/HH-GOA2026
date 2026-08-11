@@ -104,7 +104,7 @@ export const HeroCardPreview: React.FC<HeroCardPreviewProps> = ({ onStart }) => 
               </div>
             </div>
 
-            <div className="mb-3 w-full aspect-[4/4.2] border-4 border-goa-pink relative bg-gradient-to-b from-[#0D3D22] to-[#072414] overflow-hidden rounded-2xl shadow-inner group-hover:border-goa-gold transition-colors flex items-center justify-center">
+            <div className="mb-3 w-full aspect-[4/4.2] border-4 border-goa-pink relative bg-linear-to-b from-goa-green-deep to-[#072414] overflow-hidden rounded-2xl shadow-inner group-hover:border-goa-gold transition-colors flex items-center justify-center">
               <AvatarSilhouetteIcon className="w-36 h-36 text-goa-gold/75 group-hover:scale-105 transition-transform duration-500" />
 
               <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-goa-gold" />
@@ -199,7 +199,7 @@ export const HeroCardPreview: React.FC<HeroCardPreviewProps> = ({ onStart }) => 
               </div>
             </div>
 
-            <div className="relative w-full aspect-square bg-gradient-to-b from-[#0D3D22] to-[#072414] border-4 border-goa-pink rounded-2xl overflow-hidden shadow-2xl p-1 flex items-center justify-center">
+            <div className="relative w-full aspect-square bg-linear-to-b from-goa-green-deep to-[#072414] border-4 border-goa-pink rounded-2xl overflow-hidden shadow-2xl p-1 flex items-center justify-center">
               <div className="absolute inset-1.5 border-2 border-goa-gold rounded-xl pointer-events-none z-10" />
 
               <AvatarSilhouetteIcon className="w-40 h-40 text-goa-gold/75 group-hover:scale-105 transition-transform duration-500" />

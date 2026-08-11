@@ -133,7 +133,7 @@ export default function App() {
           alt="Tropical Goa Beach Background"
           className="w-full h-full object-cover object-top opacity-30 filter contrast-110 saturate-125"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-goa-green-deep/80 via-goa-green-deep/70 to-goa-green-deep/90" />
+        <div className="absolute inset-0 bg-linear-to-b from-goa-green-deep/80 via-goa-green-deep/70 to-goa-green-deep/90" />
         <div className="absolute inset-0 grid-bg-gold opacity-20" />
       </div>
 
@@ -165,7 +165,7 @@ export default function App() {
 
         {/* STEP 2: STUDIO (Interactive Customization Environment) */}
         {step === 'STUDIO' && (
-          <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 animate-fade-up">
+          <div className="w-full max-w-350 mx-auto px-4 sm:px-8 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 animate-fade-up">
             {/* Left Column: Customization Controls */}
             <div className="lg:col-span-6 space-y-6">
               <FormatSelector
