@@ -112,12 +112,18 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
     const id = encodeURIComponent(result.builderId || '#HH-GOA-2026');
     const m = result.mode || 'builder';
 
-    const sourceForThumb = result.photoUrl || result.imageDataUrl;
-    const compressedImg = await compressPhotoForUrl(sourceForThumb);
-    const imgParam = compressedImg ? encodeURIComponent(compressedImg) : '';
-
     const cleanOrigin = window.location.origin.replace(/\/$/, '');
-    const urlStateLink = `${cleanOrigin}/share?n=${n}&r=${r}&t=${t}&id=${id}&m=${m}${imgParam ? `&img=${imgParam}` : ''}`;
+    
+    // Check if image thumbnail compression generates a clean short string
+    let imgParam = '';
+    if (result.photoUrl) {
+      const compressedImg = await compressPhotoForUrl(result.photoUrl);
+      if (compressedImg && compressedImg.length < 8000) {
+        imgParam = `&img=${encodeURIComponent(compressedImg)}`;
+      }
+    }
+
+    const urlStateLink = `${cleanOrigin}/share?n=${n}&r=${r}&t=${t}&id=${id}&m=${m}${imgParam}`;
 
     setCachedShareUrl(urlStateLink);
     return urlStateLink;
