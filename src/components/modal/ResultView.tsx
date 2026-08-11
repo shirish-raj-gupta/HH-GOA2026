@@ -94,7 +94,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
     });
   };
 
-  const getOrGenerateShareUrl = async (): Promise<string> => {
+  const getShareUrlSync = (): string => {
     if (cachedShareUrl) return cachedShareUrl;
 
     const cleanId = (result.builderId || '').replace(/[^a-zA-Z0-9]/g, '');
@@ -149,26 +149,21 @@ ${shareUrl}
     }
   };
 
-  const handleShareToX = async () => {
+  const handleShareToX = () => {
     setShareState('sharing');
-    // Open blank window synchronously on user click to prevent browser popup blocker after async await
-    const win = typeof window !== 'undefined' ? window.open('about:blank', '_blank') : null;
-
     try {
-      const finalShareUrl = await getOrGenerateShareUrl();
+      const finalShareUrl = getShareUrlSync();
       const postText = generatePostText(finalShareUrl);
 
-      try {
-        await navigator.clipboard.writeText(postText);
-      } catch (clipErr) {
-        console.warn('Clipboard write warning:', clipErr);
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(postText).catch(() => {});
       }
 
       const xIntent = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
-
-      if (win && !win.closed) {
-        win.location.href = xIntent;
-      } else {
+      
+      // Direct synchronous window.open is trusted by all desktop and mobile browsers
+      const win = window.open(xIntent, '_blank');
+      if (!win) {
         window.location.href = xIntent;
       }
 
@@ -177,16 +172,17 @@ ${shareUrl}
       setTimeout(() => setShareState('idle'), 2500);
     } catch (err) {
       console.error('Share error:', err);
-      if (win && !win.closed) win.close();
       setShareState('idle');
       triggerToast('Opened Twitter/X sharing intent.');
     }
   };
 
-  const handleCopyLinkOnly = async () => {
+  const handleCopyLinkOnly = () => {
     try {
-      const linkToCopy = await getOrGenerateShareUrl();
-      await navigator.clipboard.writeText(linkToCopy);
+      const linkToCopy = getShareUrlSync();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(linkToCopy);
+      }
       triggerToast('SHAREABLE LINK COPIED TO CLIPBOARD ✦');
     } catch {
       triggerToast('Could not copy automatically.');
