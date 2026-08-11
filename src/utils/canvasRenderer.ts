@@ -443,57 +443,66 @@ export async function renderBuilderCard({
 
   const stubY = 800;
   const stubH = 580;
+  const stubW = width - 120; // 960
 
+  // 1. Draw Gold Ticket Stub Base Shape with rounded corners
   ctx.fillStyle = '#E8C840';
-  drawRoundedRect(ctx, 60, stubY, width - 120, stubH, 28);
+  drawRoundedRect(ctx, 60, stubY, stubW, stubH, 36);
   ctx.fill();
 
-  ctx.strokeStyle = '#0D3D22';
+  ctx.strokeStyle = '#072414';
   ctx.lineWidth = 4;
   ctx.stroke();
 
+  // 2. Side Circular Cutout Notches
   const notchY = stubY + 54;
   ctx.fillStyle = '#072414';
 
+  // Left Notch
   ctx.beginPath();
   ctx.arc(60, notchY, 18, Math.PI * 1.5, Math.PI * 0.5);
   ctx.fill();
-  ctx.strokeStyle = '#0D3D22';
+  ctx.strokeStyle = '#072414';
   ctx.lineWidth = 3;
   ctx.stroke();
 
+  // Right Notch
   ctx.beginPath();
   ctx.arc(width - 60, notchY, 18, Math.PI * 0.5, Math.PI * 1.5);
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = 'rgba(13, 61, 34, 0.8)';
-  ctx.font = '700 13px "Victor Mono", monospace';
+  // 3. Top Credential Header Row
+  ctx.fillStyle = 'rgba(7, 36, 20, 0.7)';
+  ctx.font = '700 14px "Victor Mono", monospace';
   ctx.textAlign = 'left';
-  ctx.fillText('/// TICKET STUB SECURITY CREDENTIAL', 90, stubY + 36);
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('/// TICKET STUB SECURITY CREDENTIAL', 95, stubY + 38);
 
   ctx.textAlign = 'right';
   const builderId = builderState.builderId || '042-GOA';
-  ctx.fillText(`ID: ${builderId}`, width - 90, stubY + 36);
+  ctx.fillText(`ID: ${builderId}`, width - 95, stubY + 38);
 
-  ctx.strokeStyle = 'rgba(13, 61, 34, 0.4)';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([8, 6]);
+  // Dashed Line across notches
+  ctx.strokeStyle = 'rgba(7, 36, 20, 0.35)';
+  ctx.lineWidth = 2.5;
+  ctx.setLineDash([10, 6]);
   ctx.beginPath();
-  ctx.moveTo(78, notchY);
-  ctx.lineTo(width - 78, notchY);
+  ctx.moveTo(80, notchY);
+  ctx.lineTo(width - 80, notchY);
   ctx.stroke();
   ctx.setLineDash([]);
 
-  const nameY = stubY + 125;
+  // 4. Name (Centered)
+  const nameY = stubY + 128;
   const hasName = Boolean(builderState.name && builderState.name.trim());
-  const rawName = hasName ? builderState.name.trim().toUpperCase() : 'YOUR NAME HERE';
+  const rawName = hasName ? builderState.name.trim().toUpperCase() : 'ALEX RIVERA';
 
-  ctx.fillStyle = hasName ? '#0D3D22' : 'rgba(13, 61, 34, 0.4)';
+  ctx.fillStyle = hasName ? '#072414' : 'rgba(7, 36, 20, 0.45)';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  let nameFontSize = 52;
+  let nameFontSize = 58;
   const maxNameWidth = width - 200;
   ctx.font = `900 ${nameFontSize}px Anybody, "Victor Mono", sans-serif`;
   while (ctx.measureText(rawName).width > maxNameWidth && nameFontSize > 22) {
@@ -502,18 +511,19 @@ export async function renderBuilderCard({
   }
   ctx.fillText(rawName, width / 2, nameY);
 
-  const roleY = stubY + 165;
-  const roleH = 54;
+  // 5. Pink Role Pill Box
+  const roleY = stubY + 172;
+  const roleH = 56;
   const hasRole = Boolean(builderState.role && builderState.role.trim());
   const roleText = hasRole ? builderState.role.trim().toUpperCase() : 'FULL-STACK / AI BUILDER';
 
   ctx.fillStyle = '#FF2D78';
-  drawRoundedRect(ctx, 110, roleY, width - 220, roleH, 18);
+  drawRoundedRect(ctx, 100, roleY, width - 200, roleH, 28);
   ctx.fill();
 
-  ctx.fillStyle = hasRole ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)';
+  ctx.fillStyle = '#FFFFFF';
   let roleFontSize = 22;
-  const maxRoleWidth = width - 260;
+  const maxRoleWidth = width - 240;
   ctx.font = `900 ${roleFontSize}px Anybody, "Victor Mono", sans-serif`;
   while (ctx.measureText(roleText).width > maxRoleWidth && roleFontSize > 14) {
     roleFontSize -= 1;
@@ -521,21 +531,22 @@ export async function renderBuilderCard({
   }
   ctx.fillText(roleText, width / 2, roleY + roleH / 2);
 
-  const titleY = stubY + 242;
-  const titleH = 54;
+  // 6. Dark Green Title Pill Box
+  const titleY = stubY + 248;
+  const titleH = 56;
   const hasTitle = Boolean(builderState.title && builderState.title.trim());
   const titleText = hasTitle ? builderState.title.trim().toUpperCase() : 'THE SHIP-IT ENGINEER';
 
-  ctx.fillStyle = '#0D3D22';
-  drawRoundedRect(ctx, 90, titleY, width - 180, titleH, 18);
+  ctx.fillStyle = '#072414';
+  drawRoundedRect(ctx, 100, titleY, width - 200, titleH, 28);
   ctx.fill();
 
   ctx.strokeStyle = '#E8C840';
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 2.5;
   ctx.stroke();
 
-  ctx.fillStyle = hasTitle ? '#E8C840' : 'rgba(232, 200, 64, 0.6)';
-  let titleFontSize = 24;
+  ctx.fillStyle = '#E8C840';
+  let titleFontSize = 22;
   const maxTitleWidth = width - 240;
   const fullTitleStr = `[ ${titleText} ]`;
   ctx.font = `900 ${titleFontSize}px Anybody, "Victor Mono", sans-serif`;
@@ -547,57 +558,65 @@ export async function renderBuilderCard({
 
   ctx.textBaseline = 'alphabetic';
 
-  ctx.strokeStyle = 'rgba(13, 61, 34, 0.25)';
+  // Divider Line above Status/Location
+  ctx.strokeStyle = 'rgba(7, 36, 20, 0.25)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(90, stubY + 322);
-  ctx.lineTo(width - 90, stubY + 322);
+  ctx.moveTo(95, stubY + 328);
+  ctx.lineTo(width - 95, stubY + 328);
   ctx.stroke();
 
-  const gridY = stubY + 355;
+  // 7. Status & Location Grid
+  const gridY = stubY + 358;
 
-  ctx.fillStyle = 'rgba(13, 61, 34, 0.65)';
-  ctx.font = '700 12px "Victor Mono", monospace';
+  // Left: STATUS / FOCUS
+  ctx.fillStyle = 'rgba(7, 36, 20, 0.65)';
+  ctx.font = '700 13px "Victor Mono", monospace';
   ctx.textAlign = 'left';
-  ctx.fillText('STATUS / FOCUS', 90, gridY);
+  ctx.fillText('STATUS / FOCUS', 95, gridY);
 
   const hasBuilding = Boolean(builderState.building && builderState.building.trim());
   const buildingText = hasBuilding ? builderState.building.trim().toUpperCase() : 'SHIPPER OF QUESTIONABLE IDEAS';
-  ctx.fillStyle = hasBuilding ? '#0D3D22' : 'rgba(13, 61, 34, 0.45)';
+  ctx.fillStyle = hasBuilding ? '#072414' : 'rgba(7, 36, 20, 0.55)';
   ctx.font = '800 18px Anybody, sans-serif';
-  ctx.fillText(buildingText.slice(0, 32), 90, gridY + 26);
+  ctx.fillText(buildingText.slice(0, 34), 95, gridY + 26);
 
-  const col2X = width - 360;
-  ctx.fillStyle = 'rgba(13, 61, 34, 0.65)';
-  ctx.font = '700 12px "Victor Mono", monospace';
-  ctx.fillText('LOCATION / VENUE', col2X, gridY);
+  // Right: LOCATION / VENUE (Right Aligned)
+  ctx.fillStyle = 'rgba(7, 36, 20, 0.65)';
+  ctx.font = '700 13px "Victor Mono", monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('LOCATION / VENUE', width - 95, gridY);
 
-  ctx.fillStyle = '#0D3D22';
+  ctx.fillStyle = '#072414';
   ctx.font = '800 18px Anybody, sans-serif';
-  ctx.fillText('PALOLEM BEACH, GOA', col2X, gridY + 26);
+  ctx.fillText('PALOLEM BEACH, GOA', width - 95, gridY + 26);
 
-  const barcodeY = stubY + 425;
-  const barcodeW = width - 180;
+  // 8. Centered Barcode
+  const barcodeY = stubY + 428;
+  const barcodeBars = [4, 2, 6, 2, 3, 7, 2, 4, 2, 6, 3, 2, 8, 3, 2, 5, 2, 4, 3, 6, 2, 4, 7, 2, 5, 2, 3, 4, 2, 6, 3, 2, 5, 2, 4];
+  let totalBarcodeW = 0;
+  for (let i = 0; i < barcodeBars.length; i++) {
+    totalBarcodeW += barcodeBars[i] + (i % 3) * 2.5;
+  }
+  let bx = (width - totalBarcodeW) / 2;
 
-  ctx.fillStyle = '#0D3D22';
-  let bx = 90;
-  const widths = [4, 2, 6, 2, 3, 7, 2, 4, 2, 6, 3, 2, 8, 3, 2, 5, 2, 4, 3, 6, 2, 4, 7, 2, 5, 2, 3];
-  for (let i = 0; i < widths.length; i++) {
-    const w = widths[i];
-    if (i % 2 === 0) ctx.fillRect(bx, barcodeY, w, 38);
-    bx += w + (i % 3) * 2;
-    if (bx >= 90 + barcodeW) break;
+  ctx.fillStyle = '#072414';
+  for (let i = 0; i < barcodeBars.length; i++) {
+    const w = barcodeBars[i];
+    if (i % 2 === 0) ctx.fillRect(bx, barcodeY, w, 40);
+    bx += w + (i % 3) * 2.5;
   }
 
-  const tagY = stubY + 490;
-  ctx.fillStyle = '#0D3D22';
-  drawRoundedRect(ctx, 90, tagY, width - 180, 48, 14);
+  // 9. Bottom Tag Pill
+  const tagY = stubY + 494;
+  ctx.fillStyle = '#072414';
+  drawRoundedRect(ctx, 95, tagY, width - 190, 50, 25);
   ctx.fill();
 
   ctx.fillStyle = '#E8C840';
   ctx.font = '700 16px "Victor Mono", monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('✦ BUILD · SHIP · REPEAT ✦ #FRAMEINGOA ✦', width / 2, tagY + 30);
+  ctx.fillText('✦ BUILD · SHIP · REPEAT ✦ #FRAMEINGOA ✦', width / 2, tagY + 31);
 
   return canvas.toDataURL('image/png');
 }

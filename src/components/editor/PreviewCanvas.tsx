@@ -6,6 +6,7 @@ interface PreviewCanvasProps {
   mode: CreationMode;
   photoState: PhotoState;
   builderState: BuilderState;
+  onSelectMode?: (mode: CreationMode) => void;
   onRenderedDataUrlChange?: (dataUrl: string) => void;
 }
 
@@ -13,6 +14,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
   mode,
   photoState,
   builderState,
+  onSelectMode,
   onRenderedDataUrlChange,
 }) => {
   const [renderedPreview, setRenderedPreview] = useState<string | null>(null);
@@ -106,7 +108,33 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
   return (
     <div className="w-full flex flex-col items-center justify-center relative space-y-4">
-      {/* PREVIEW STATUS HEADER BAR */}
+      {/* MODE SELECTOR PILL TABS (EXACTLY MATCHING LANDING SCREEN CANVAS) */}
+      <div className="w-full bg-goa-green-deep/90 backdrop-blur-md border-2 border-goa-gold/30 p-1.5 rounded-xl flex items-center gap-1 font-mono text-xs shadow-lg">
+        <button
+          type="button"
+          onClick={() => onSelectMode && onSelectMode('builder')}
+          className={`flex-1 py-2 px-3 rounded-lg font-bold transition-all cursor-pointer text-center uppercase ${
+            mode === 'builder'
+              ? 'bg-goa-pink text-white shadow-md'
+              : 'text-[#F5F0E1]/50 hover:text-goa-gold'
+          }`}
+        >
+          BUILDER CARD (4:5)
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelectMode && onSelectMode('pfp')}
+          className={`flex-1 py-2 px-3 rounded-lg font-bold transition-all cursor-pointer text-center uppercase ${
+            mode === 'pfp'
+              ? 'bg-goa-pink text-white shadow-md'
+              : 'text-[#F5F0E1]/50 hover:text-goa-gold'
+          }`}
+        >
+          PFP FRAME (1:1)
+        </button>
+      </div>
+
+      {/* STATUS SUB-HEADER BAR */}
       <div className="w-full flex justify-between items-center font-mono text-xs px-1">
         <div className="text-goa-pink uppercase tracking-wider flex items-center gap-2 font-bold">
           <span className="w-2.5 h-2.5 bg-goa-pink rounded-full animate-ping" />
