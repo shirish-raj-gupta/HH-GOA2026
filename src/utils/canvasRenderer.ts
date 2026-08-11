@@ -502,12 +502,12 @@ export async function renderBuilderCard({
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  let nameFontSize = 58;
+  let nameFontSize = 64;
   const maxNameWidth = width - 200;
-  ctx.font = `900 ${nameFontSize}px Anybody, "Victor Mono", sans-serif`;
-  while (ctx.measureText(rawName).width > maxNameWidth && nameFontSize > 22) {
+  ctx.font = `900 ${nameFontSize}px Imbue, Anybody, serif`;
+  while (ctx.measureText(rawName).width > maxNameWidth && nameFontSize > 24) {
     nameFontSize -= 2;
-    ctx.font = `900 ${nameFontSize}px Anybody, "Victor Mono", sans-serif`;
+    ctx.font = `900 ${nameFontSize}px Imbue, Anybody, serif`;
   }
   ctx.fillText(rawName, width / 2, nameY);
 
@@ -522,12 +522,12 @@ export async function renderBuilderCard({
   ctx.fill();
 
   ctx.fillStyle = '#FFFFFF';
-  let roleFontSize = 22;
+  let roleFontSize = 26;
   const maxRoleWidth = width - 240;
-  ctx.font = `900 ${roleFontSize}px Anybody, "Victor Mono", sans-serif`;
+  ctx.font = `900 ${roleFontSize}px Imbue, Anybody, serif`;
   while (ctx.measureText(roleText).width > maxRoleWidth && roleFontSize > 14) {
     roleFontSize -= 1;
-    ctx.font = `900 ${roleFontSize}px Anybody, "Victor Mono", sans-serif`;
+    ctx.font = `900 ${roleFontSize}px Imbue, Anybody, serif`;
   }
   ctx.fillText(roleText, width / 2, roleY + roleH / 2);
 
@@ -546,13 +546,13 @@ export async function renderBuilderCard({
   ctx.stroke();
 
   ctx.fillStyle = '#E8C840';
-  let titleFontSize = 22;
+  let titleFontSize = 26;
   const maxTitleWidth = width - 240;
   const fullTitleStr = `[ ${titleText} ]`;
-  ctx.font = `900 ${titleFontSize}px Anybody, "Victor Mono", sans-serif`;
+  ctx.font = `900 ${titleFontSize}px Imbue, Anybody, serif`;
   while (ctx.measureText(fullTitleStr).width > maxTitleWidth && titleFontSize > 14) {
     titleFontSize -= 1;
-    ctx.font = `900 ${titleFontSize}px Anybody, "Victor Mono", sans-serif`;
+    ctx.font = `900 ${titleFontSize}px Imbue, Anybody, serif`;
   }
   ctx.fillText(fullTitleStr, width / 2, titleY + titleH / 2);
 
@@ -578,7 +578,7 @@ export async function renderBuilderCard({
   const hasBuilding = Boolean(builderState.building && builderState.building.trim());
   const buildingText = hasBuilding ? builderState.building.trim().toUpperCase() : 'SHIPPER OF QUESTIONABLE IDEAS';
   ctx.fillStyle = hasBuilding ? '#072414' : 'rgba(7, 36, 20, 0.55)';
-  ctx.font = '800 18px Anybody, sans-serif';
+  ctx.font = '900 22px Imbue, Anybody, serif';
   ctx.fillText(buildingText.slice(0, 34), 95, gridY + 26);
 
   // Right: LOCATION / VENUE (Right Aligned)
@@ -588,7 +588,7 @@ export async function renderBuilderCard({
   ctx.fillText('LOCATION / VENUE', width - 95, gridY);
 
   ctx.fillStyle = '#072414';
-  ctx.font = '800 18px Anybody, sans-serif';
+  ctx.font = '900 22px Imbue, Anybody, serif';
   ctx.fillText('PALOLEM BEACH, GOA', width - 95, gridY + 26);
 
   // 8. Centered Barcode

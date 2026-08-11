@@ -160,7 +160,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
       </div>
 
       {/* 3D INTERACTIVE CARD CONTAINER (MATCHING LANDING SCREEN CANVAS PREVIEW) */}
-      <div className="relative w-full max-w-[580px] xl:max-w-[640px] flex justify-center">
+      <div className="relative w-full max-w-[440px] sm:max-w-[480px] lg:max-w-[480px] xl:max-w-[510px] flex justify-center">
         {/* Top Pin Badge */}
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 w-6 h-6 bg-goa-pink rounded-full shadow-[0_4px_12px_rgba(255,45,120,0.5)] border-2 border-white flex items-center justify-center pointer-events-none">
           <div className="w-1.5 h-1.5 bg-white rounded-full" />
