@@ -22,4 +22,17 @@ app.use(shareRoutes);
 app.use(ogRoutes);
 app.use(healthRoutes);
 
+// Error handling middleware to prevent serverless function crash (500 FUNCTION_INVOCATION_FAILED)
+app.use(
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction
+  ) => {
+    console.error("Vercel Serverless Function Error:", err);
+    res.status(500).json({ error: "Internal server error", message: err.message });
+  }
+);
+
 export default app;

@@ -1,66 +1,89 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 import type { SharedCardData } from "../types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const STORE_FILE = path.join(DATA_DIR, "shared-cards.json");
+function getDataDir(): string {
+  // On Vercel or read-only cloud runtimes, process.cwd() is read-only.
+  // Prefer os.tmpdir() if process.env.VERCEL is set or fallback if write fails.
+  if (process.env.VERCEL) {
+    return path.join(os.tmpdir(), "hh-goa-data");
+  }
+  return path.join(process.cwd(), "data");
+}
+
+let DATA_DIR = getDataDir();
+let STORE_FILE = path.join(DATA_DIR, "shared-cards.json");
 const MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 let cache: Map<string, SharedCardData> | null = null;
 let totalGenerated = 0;
 
 function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch {
+    // If process.cwd() is read-only, switch to os.tmpdir()
+    try {
+      DATA_DIR = path.join(os.tmpdir(), "hh-goa-data");
+      STORE_FILE = path.join(DATA_DIR, "shared-cards.json");
+      if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+      }
+    } catch (e) {
+      console.warn("[fileStore] Filesystem write unavailable, using in-memory store:", e);
+    }
   }
 }
 
 function load(): Map<string, SharedCardData> {
   if (cache) return cache;
 
+  cache = new Map();
   ensureDataDir();
 
-  if (!fs.existsSync(STORE_FILE)) {
-    cache = new Map();
-    return cache;
-  }
-
   try {
-    const raw = fs.readFileSync(STORE_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
+    if (fs.existsSync(STORE_FILE)) {
+      const raw = fs.readFileSync(STORE_FILE, "utf-8");
+      const parsed = JSON.parse(raw);
 
-    if (parsed && typeof parsed === "object" && parsed.cards) {
-      const entries: [string, SharedCardData][] = Object.entries(parsed.cards);
-      cache = new Map(entries);
-      totalGenerated = parsed.totalGenerated || entries.length;
-    } else {
-      cache = new Map();
+      if (parsed && typeof parsed === "object" && parsed.cards) {
+        const entries: [string, SharedCardData][] = Object.entries(parsed.cards);
+        cache = new Map(entries);
+        totalGenerated = parsed.totalGenerated || entries.length;
+      }
     }
-  } catch {
-    cache = new Map();
+  } catch (err) {
+    console.warn("[fileStore] Error reading store file:", err);
   }
 
   return cache;
 }
 
 function persist(): void {
-  ensureDataDir();
+  try {
+    ensureDataDir();
 
-  const store = load();
-  const obj: Record<string, SharedCardData> = {};
-  for (const [id, card] of store) {
-    obj[id] = card;
+    const store = load();
+    const obj: Record<string, SharedCardData> = {};
+    for (const [id, card] of store) {
+      obj[id] = card;
+    }
+
+    const payload = JSON.stringify(
+      { totalGenerated, cards: obj },
+      null,
+      2
+    );
+
+    const tmpFile = STORE_FILE + ".tmp";
+    fs.writeFileSync(tmpFile, payload, "utf-8");
+    fs.renameSync(tmpFile, STORE_FILE);
+  } catch (err) {
+    console.warn("[fileStore] Storage persist failed (operating in-memory):", err);
   }
-
-  const payload = JSON.stringify(
-    { totalGenerated, cards: obj },
-    null,
-    2
-  );
-
-  const tmpFile = STORE_FILE + ".tmp";
-  fs.writeFileSync(tmpFile, payload, "utf-8");
-  fs.renameSync(tmpFile, STORE_FILE);
 }
 
 function pruneExpired(): void {
