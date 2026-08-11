@@ -18,7 +18,30 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
   const [renderedPreview, setRenderedPreview] = useState<string | null>(null);
   const [isRendering, setIsRendering] = useState(false);
   const [showScanlines, setShowScanlines] = useState(false);
+  const [transformStyle, setTransformStyle] = useState({});
   const imageRef = useRef<HTMLImageElement | null>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    const rotateX = (-y / rect.height) * 10;
+    const rotateY = (x / rect.width) * 10;
+
+    setTransformStyle({
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.015, 1.015, 1.015)`,
+      transition: 'transform 0.1s ease-out',
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTransformStyle({
+      transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+      transition: 'transform 0.5s ease-out',
+    });
+  };
 
   useEffect(() => {
     if (photoState.sourceUrl) {
@@ -82,7 +105,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center relative space-y-3">
+    <div className="w-full flex flex-col items-center justify-center relative space-y-4">
+      {/* PREVIEW STATUS HEADER BAR */}
       <div className="w-full flex justify-between items-center font-mono text-xs px-1">
         <div className="text-goa-pink uppercase tracking-wider flex items-center gap-2 font-bold">
           <span className="w-2.5 h-2.5 bg-goa-pink rounded-full animate-ping" />
@@ -107,39 +131,54 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         </div>
       </div>
 
-      <div className="relative w-full max-w-[580px] xl:max-w-[640px] bg-goa-green-deep border-2 border-goa-gold/40 p-3 sm:p-4 shadow-[0_0_50px_rgba(232,200,64,0.15)] rounded-2xl transition-all duration-300 group hover:border-goa-gold hover:shadow-[0_0_65px_rgba(232,200,64,0.3)]">
-        <div className="absolute -top-1 -left-1 w-4 h-4 border-t-3 border-l-3 border-goa-gold rounded-tl-lg" />
-        <div className="absolute -top-1 -right-1 w-4 h-4 border-t-3 border-r-3 border-goa-gold rounded-tr-lg" />
-        <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-3 border-l-3 border-goa-gold rounded-bl-lg" />
-        <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-3 border-r-3 border-goa-gold rounded-br-lg" />
+      {/* 3D INTERACTIVE CARD CONTAINER (MATCHING LANDING SCREEN CANVAS PREVIEW) */}
+      <div className="relative w-full max-w-[580px] xl:max-w-[640px] flex justify-center">
+        {/* Top Pin Badge */}
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 w-6 h-6 bg-goa-pink rounded-full shadow-[0_4px_12px_rgba(255,45,120,0.5)] border-2 border-white flex items-center justify-center pointer-events-none">
+          <div className="w-1.5 h-1.5 bg-white rounded-full" />
+        </div>
 
-        {renderedPreview ? (
-          <div className="relative w-full overflow-hidden rounded-xl bg-black">
-            <img
-              src={renderedPreview}
-              alt="Live HH Goa 2026 Graphic Preview"
-              className="w-full h-auto object-contain shadow-2xl transition-transform duration-500 group-hover:scale-[1.01]"
-            />
-            {showScanlines && (
-              <div className="absolute inset-0 scanlines opacity-30 pointer-events-none" />
-            )}
-          </div>
-        ) : (
-          <div className="w-full aspect-4/5 bg-goa-surface flex flex-col items-center justify-center p-6 text-center border border-[#F5F0E1]/10 rounded-xl">
-            <span className="material-symbols-outlined text-6xl text-goa-gold/30 mb-3 animate-pulse">
-              badge
-            </span>
-            <span className="font-mono text-xs text-goa-gold uppercase tracking-widest border-b border-[#F5F0E1]/10 pb-1 mb-2 font-bold">
-              PREVIEW READY
-            </span>
-            <span className="font-display font-extrabold text-base text-[#F5F0E1]/60">
-              UPLOAD PHOTO TO VIEW LIVE BUILDER GRAPHIC
-            </span>
-          </div>
-        )}
+        {/* Cyber Deck Frame */}
+        <div
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={transformStyle}
+          className="w-full bg-goa-green-deep text-[#F5F0E1] border-2 border-goa-gold p-4 sm:p-5 relative overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.8)] rounded-3xl group transition-all duration-300"
+        >
+          {/* Corner Cyber Brackets */}
+          <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-goa-gold pointer-events-none z-20" />
+          <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-goa-gold pointer-events-none z-20" />
+          <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-goa-gold pointer-events-none z-20" />
+          <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-goa-gold pointer-events-none z-20" />
+
+          {renderedPreview ? (
+            <div className="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl">
+              <img
+                src={renderedPreview}
+                alt="Live HH Goa 2026 Graphic Preview"
+                className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.005]"
+              />
+              {showScanlines && (
+                <div className="absolute inset-0 scanlines opacity-30 pointer-events-none" />
+              )}
+            </div>
+          ) : (
+            <div className="w-full aspect-4/5 bg-goa-surface flex flex-col items-center justify-center p-6 text-center border border-[#F5F0E1]/10 rounded-xl">
+              <span className="material-symbols-outlined text-6xl text-goa-gold/30 mb-3 animate-pulse">
+                badge
+              </span>
+              <span className="font-mono text-xs text-goa-gold uppercase tracking-widest border-b border-[#F5F0E1]/10 pb-1 mb-2 font-bold">
+                PREVIEW READY
+              </span>
+              <span className="font-display font-extrabold text-base text-[#F5F0E1]/60">
+                UPLOAD PHOTO TO VIEW LIVE BUILDER GRAPHIC
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="font-mono text-[11px] text-[#F5F0E1]/40 text-center flex items-center justify-center gap-2">
+      <div className="font-mono text-[11px] text-[#F5F0E1]/40 text-center flex items-center justify-center gap-2 pt-1">
         <span className="w-1.5 h-1.5 bg-goa-gold rounded-full" />
         <span>HIGH-RES 300 DPI RENDER · INSTANT PNG EXPORT</span>
       </div>
