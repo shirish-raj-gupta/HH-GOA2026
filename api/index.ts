@@ -22,7 +22,12 @@ app.use(shareRoutes);
 app.use(ogRoutes);
 app.use(healthRoutes);
 
-// Error handling middleware to prevent serverless function crash (500 FUNCTION_INVOCATION_FAILED)
+// Catch unmatched API requests to prevent Vercel execution timeouts
+app.use((_req, res) => {
+  res.status(404).json({ error: "API route not found" });
+});
+
+// Error handling middleware to prevent serverless crashes
 app.use(
   (
     err: Error,

@@ -4,7 +4,7 @@ import * as fileStore from "../storage/fileStore";
 const router = Router();
 const startTime = Date.now();
 
-router.get("/api/health", (_req, res) => {
+const handleHealth = (_req: any, res: any) => {
   const stats = fileStore.getStats();
 
   res.json({
@@ -14,9 +14,9 @@ router.get("/api/health", (_req, res) => {
     version: "2026.1.0",
     timestamp: Date.now(),
   });
-});
+};
 
-router.get("/api/stats", (_req, res) => {
+const handleStats = (_req: any, res: any) => {
   const stats = fileStore.getStats();
 
   res.json({
@@ -25,6 +25,12 @@ router.get("/api/stats", (_req, res) => {
     oldestCardAge: stats.oldestCardAge,
     storagePath: stats.storagePath,
   });
-});
+};
+
+router.get("/api/health", handleHealth);
+router.get("/health", handleHealth);
+
+router.get("/api/stats", handleStats);
+router.get("/stats", handleStats);
 
 export default router;

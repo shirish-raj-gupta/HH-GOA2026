@@ -6,14 +6,6 @@
       "destination": "/api"
     },
     {
-      "source": "/share/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/s/(.*)",
-      "destination": "/api"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
