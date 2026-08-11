@@ -31,9 +31,9 @@ router.post(
 
       fileStore.save(sharedCard);
 
-      const baseUrl =
-        process.env.APP_URL ||
-        `http://${req.headers.host || "localhost:3000"}`;
+      const protocol = (req.headers["x-forwarded-proto"] as string) || "https";
+      const host = (req.headers["x-forwarded-host"] as string) || req.headers.host || "localhost:3000";
+      const baseUrl = process.env.APP_URL || `${protocol}://${host}`;
       const cleanBase = baseUrl.replace(/\/$/, "");
       const shareUrl = `${cleanBase}/share/${id}`;
 

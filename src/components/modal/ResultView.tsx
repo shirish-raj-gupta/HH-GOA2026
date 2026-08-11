@@ -39,6 +39,28 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
 
   const [cachedShareUrl, setCachedShareUrl] = useState<string | null>(result.shareUrl || null);
 
+  const compressDataUrl = async (dataUrl: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = 0.5; // 540x675
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        } else {
+          resolve(dataUrl);
+        }
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  };
+
   const getOrGenerateShareUrl = async (): Promise<string> => {
     if (cachedShareUrl) return cachedShareUrl;
     if (result.shareUrl) {
@@ -46,12 +68,17 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
       return result.shareUrl;
     }
 
+    const fallbackId = (result.builderId || '').replace(/[^a-zA-Z0-9]/g, '') || Math.random().toString(36).substring(2, 10);
+    const cleanOrigin = window.location.origin.replace(/\/$/, '');
+    const fallbackUrl = `${cleanOrigin}/share/${fallbackId}`;
+
     try {
+      const compressedImage = await compressDataUrl(result.imageDataUrl);
       const response = await fetch('/api/share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          imageDataUrl: result.imageDataUrl,
+          imageDataUrl: compressedImage,
           name: result.name,
           role: result.role,
           title: result.title,
@@ -77,7 +104,8 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
       console.warn('Share API request failed:', err);
     }
 
-    return window.location.href;
+    setCachedShareUrl(fallbackUrl);
+    return fallbackUrl;
   };
 
   const generatePostText = (shareUrl: string) => {

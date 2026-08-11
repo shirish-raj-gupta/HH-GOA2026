@@ -3,9 +3,9 @@ import * as fileStore from "../storage/fileStore";
 
 const router = Router();
 
-router.get("/share/:id", (req, res) => {
+const handleShareRoute = (req: any, res: any) => {
   const card = fileStore.get(req.params.id);
-  const host = req.headers.host || "localhost:3000";
+  const host = req.headers["x-forwarded-host"] || req.headers.host || "localhost:3000";
   const protocol = req.headers["x-forwarded-proto"] || "https";
   const baseUrl =
     process.env.APP_URL || `${protocol}://${host}`;
@@ -101,6 +101,9 @@ router.get("/share/:id", (req, res) => {
 </html>`;
 
   res.send(html);
-});
+};
+
+router.get("/share/:id", handleShareRoute);
+router.get("/s/:id", handleShareRoute);
 
 export default router;

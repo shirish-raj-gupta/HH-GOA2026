@@ -50,7 +50,13 @@ export default function App() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const shareId = params.get('shareId');
+    let shareId = params.get('shareId');
+    if (!shareId) {
+      const match = window.location.pathname.match(/^\/(?:share|s)\/([a-zA-Z0-9_-]+)/);
+      if (match) {
+        shareId = match[1];
+      }
+    }
     if (shareId) {
       setShareIdFromUrl(shareId);
     }
