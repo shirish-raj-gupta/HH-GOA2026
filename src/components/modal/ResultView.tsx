@@ -67,7 +67,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
       img.crossOrigin = 'anonymous';
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const maxDim = 320;
+        const maxDim = 200;
         let w = img.width;
         let h = img.height;
         if (w > maxDim || h > maxDim) {
@@ -84,7 +84,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
         const ctx = canvas.getContext('2d');
         if (ctx) {
           ctx.drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL('image/jpeg', 0.65));
+          resolve(canvas.toDataURL('image/jpeg', 0.55));
         } else {
           resolve('');
         }
@@ -97,13 +97,23 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
   const getOrGenerateShareUrl = async (): Promise<string> => {
     if (cachedShareUrl) return cachedShareUrl;
 
+    const cleanId = (result.builderId || '').replace(/[^a-zA-Z0-9]/g, '');
+    if (typeof window !== 'undefined' && window.localStorage && result.imageDataUrl && cleanId) {
+      try {
+        localStorage.setItem(`hh_pass_${cleanId}`, result.imageDataUrl);
+      } catch (e) {
+        console.warn('LocalStorage save error:', e);
+      }
+    }
+
     const n = encodeURIComponent(result.name || 'GOA BUILDER');
     const r = encodeURIComponent(result.role || 'HACKER');
     const t = encodeURIComponent(result.title || 'THE SHIP-IT ENGINEER');
     const id = encodeURIComponent(result.builderId || '#HH-GOA-2026');
     const m = result.mode || 'builder';
 
-    const compressedImg = await compressPhotoForUrl(result.imageDataUrl);
+    const sourceForThumb = result.photoUrl || result.imageDataUrl;
+    const compressedImg = await compressPhotoForUrl(sourceForThumb);
     const imgParam = compressedImg ? encodeURIComponent(compressedImg) : '';
 
     const cleanOrigin = window.location.origin.replace(/\/$/, '');

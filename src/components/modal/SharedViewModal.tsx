@@ -32,6 +32,20 @@ export const SharedViewModal: React.FC<SharedViewModalProps> = ({
       return;
     }
 
+    const cleanId = (cardInfo.builderId || '').replace(/[^a-zA-Z0-9]/g, '');
+    if (typeof window !== 'undefined' && window.localStorage && cleanId) {
+      try {
+        const cached = localStorage.getItem(`hh_pass_${cleanId}`);
+        if (cached) {
+          setRenderedUrl(cached);
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.warn('LocalStorage read error:', e);
+      }
+    }
+
     const renderCard = async () => {
       setLoading(true);
 

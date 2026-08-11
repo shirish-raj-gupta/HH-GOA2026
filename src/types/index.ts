@@ -23,6 +23,7 @@ export interface BuilderState {
 
 export interface GeneratedResult {
   imageDataUrl: string;
+  photoUrl?: string | null;
   blob: Blob | null;
   mode: CreationMode;
   name: string;

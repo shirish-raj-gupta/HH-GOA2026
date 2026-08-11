@@ -118,6 +118,7 @@ export default function App() {
     if (renderedDataUrl) {
       setGeneratedResult({
         imageDataUrl: renderedDataUrl,
+        photoUrl: photoState.sourceUrl,
         blob: null,
         mode,
         name: builderState.name,
