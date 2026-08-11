@@ -113,17 +113,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
     const m = result.mode || 'builder';
 
     const cleanOrigin = window.location.origin.replace(/\/$/, '');
-    
-    // Check if image thumbnail compression generates a clean short string
-    let imgParam = '';
-    if (result.photoUrl) {
-      const compressedImg = await compressPhotoForUrl(result.photoUrl);
-      if (compressedImg && compressedImg.length < 8000) {
-        imgParam = `&img=${encodeURIComponent(compressedImg)}`;
-      }
-    }
-
-    const urlStateLink = `${cleanOrigin}/share?n=${n}&r=${r}&t=${t}&id=${id}&m=${m}${imgParam}`;
+    const urlStateLink = `${cleanOrigin}/share?n=${n}&r=${r}&t=${t}&id=${id}&m=${m}`;
 
     setCachedShareUrl(urlStateLink);
     return urlStateLink;
