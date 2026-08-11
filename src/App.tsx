@@ -14,6 +14,67 @@ import { LoadingScreen } from './components/LoadingScreen';
 import { AppStep, BuilderState, CreationMode, GeneratedResult, PhotoState } from './types';
 import heroBgImg from '../assets/image.png';
 
+async function compressAndUploadShareCard(
+  dataUrl: string,
+  name: string,
+  role: string,
+  title: string,
+  mode: string
+): Promise<string | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = async () => {
+      const canvas = document.createElement('canvas');
+      const maxDim = 540;
+      let w = img.width;
+      let h = img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round((h * maxDim) / w);
+          w = maxDim;
+        } else {
+          w = Math.round((w * maxDim) / h);
+          h = maxDim;
+        }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, w, h);
+        const compressedImage = canvas.toDataURL('image/jpeg', 0.75);
+
+        try {
+          const res = await fetch('/api/share', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              imageDataUrl: compressedImage,
+              name,
+              role,
+              title,
+              mode,
+            }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.shareUrl) {
+              resolve(data.shareUrl);
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn('Pre-upload share error:', err);
+        }
+      }
+      resolve(null);
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+
 function getRandomBuilderUid(): string {
   const randNum = Math.floor(1000 + Math.random() * 9000);
   return `#HH-GOA-${randNum}`;
@@ -115,12 +176,27 @@ export default function App() {
     setBuilderState((prev) => ({ ...prev, ...updated }));
   };
 
+  const [precreatedShareUrl, setPrecreatedShareUrl] = useState<string | null>(null);
+
   const handleTriggerGenerate = () => {
     if (!photoState.file) {
       setUploadError('Please upload your photo first to generate your Builder Card.');
       return;
     }
+    setPrecreatedShareUrl(null);
     setStep('GENERATING');
+
+    if (renderedDataUrl) {
+      compressAndUploadShareCard(
+        renderedDataUrl,
+        builderState.name,
+        builderState.role,
+        builderState.title,
+        mode
+      ).then((url) => {
+        if (url) setPrecreatedShareUrl(url);
+      });
+    }
   };
 
   const handleGenerationComplete = () => {
@@ -134,6 +210,7 @@ export default function App() {
         role: builderState.role,
         title: builderState.title,
         builderId: builderState.builderId,
+        shareUrl: precreatedShareUrl || undefined,
       });
       setStep('RESULT');
     } else {
