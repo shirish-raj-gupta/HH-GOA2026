@@ -26,29 +26,55 @@ export const SharedViewModal: React.FC<SharedViewModalProps> = ({
   const [loading, setLoading] = useState(!cardInfo.imageDataUrl);
 
   useEffect(() => {
-    if (cardInfo.imageDataUrl) {
-      setRenderedUrl(cardInfo.imageDataUrl);
-      setLoading(false);
-      return;
-    }
+    let isMounted = true;
 
-    const cleanId = (cardInfo.builderId || '').replace(/[^a-zA-Z0-9]/g, '');
-    if (typeof window !== 'undefined' && window.localStorage && cleanId) {
-      try {
-        const cached = localStorage.getItem(`hh_pass_${cleanId}`);
-        if (cached) {
-          setRenderedUrl(cached);
-          setLoading(false);
-          return;
-        }
-      } catch (e) {
-        console.warn('LocalStorage read error:', e);
-      }
-    }
-
-    const renderCard = async () => {
+    const loadSharedCard = async () => {
       setLoading(true);
 
+      // 1. Direct imageDataUrl
+      if (cardInfo.imageDataUrl) {
+        if (isMounted) {
+          setRenderedUrl(cardInfo.imageDataUrl);
+          setLoading(false);
+        }
+        return;
+      }
+
+      // 2. Check LocalStorage cache
+      const cleanId = (cardInfo.builderId || '').replace(/[^a-zA-Z0-9]/g, '');
+      if (typeof window !== 'undefined' && window.localStorage && cleanId) {
+        try {
+          const cached = localStorage.getItem(`hh_pass_${cleanId}`);
+          if (cached) {
+            if (isMounted) {
+              setRenderedUrl(cached);
+              setLoading(false);
+            }
+            return;
+          }
+        } catch (e) {
+          console.warn('LocalStorage read error:', e);
+        }
+      }
+
+      // 3. Fetch from Server API if ID is present in URL
+      if (cardInfo.id) {
+        try {
+          const res = await fetch(`/api/share/${cardInfo.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.imageDataUrl && isMounted) {
+              setRenderedUrl(data.imageDataUrl);
+              setLoading(false);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('Server share fetch error:', e);
+        }
+      }
+
+      // 4. Fallback: canvas render
       let loadedImage: HTMLImageElement | null = null;
       if (cardInfo.imageUrl) {
         loadedImage = await new Promise<HTMLImageElement | null>((resolve) => {
@@ -85,15 +111,23 @@ export const SharedViewModal: React.FC<SharedViewModalProps> = ({
           photoState: dummyPhotoState,
           builderState,
         });
-        setRenderedUrl(url);
+        if (isMounted) {
+          setRenderedUrl(url);
+        }
       } catch (err) {
         console.warn('Canvas render error:', err);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
-    renderCard();
+    loadSharedCard();
+
+    return () => {
+      isMounted = false;
+    };
   }, [cardInfo]);
 
   return (

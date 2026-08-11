@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GeneratedResult } from '../../types';
 
 interface ResultViewProps {
@@ -93,6 +93,74 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
       img.src = dataUrl;
     });
   };
+
+  const compressForServerShare = async (dataUrl: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 540;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.75));
+        } else {
+          resolve(dataUrl);
+        }
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    const createShareOnServer = async () => {
+      try {
+        const compressedImage = await compressForServerShare(result.imageDataUrl);
+        const response = await fetch('/api/share', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageDataUrl: compressedImage,
+            name: result.name,
+            role: result.role,
+            title: result.title,
+            mode: result.mode,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.shareUrl && isMounted) {
+            setCachedShareUrl(data.shareUrl);
+          }
+        }
+      } catch (err) {
+        console.warn('Background server share creation error:', err);
+      }
+    };
+
+    createShareOnServer();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [result]);
 
   const getShareUrlSync = (): string => {
     if (cachedShareUrl) return cachedShareUrl;

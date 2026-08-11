@@ -47,6 +47,7 @@ export default function App() {
   const [generatedResult, setGeneratedResult] = useState<GeneratedResult | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [sharedCardFromUrl, setSharedCardFromUrl] = useState<{
+    id?: string;
     name: string;
     role: string;
     title: string;
@@ -57,15 +58,23 @@ export default function App() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const n = params.get('n') || params.get('name');
-    const r = params.get('r') || params.get('role');
-    const t = params.get('t') || params.get('title');
-    const id = params.get('id') || params.get('shareId');
-    const m = (params.get('m') || params.get('mode') || 'builder') as 'builder' | 'pfp';
-    const img = params.get('img') || params.get('image');
+    let n = params.get('n') || params.get('name');
+    let r = params.get('r') || params.get('role');
+    let t = params.get('t') || params.get('title');
+    let id = params.get('id') || params.get('shareId');
+    let m = (params.get('m') || params.get('mode') || 'builder') as 'builder' | 'pfp';
+    let img = params.get('img') || params.get('image');
 
-    if (n || r || t || id || img) {
+    const match = window.location.pathname.match(/^\/(?:share|s)\/([a-zA-Z0-9_-]+)/);
+    let serverShareId: string | undefined = undefined;
+    if (match) {
+      serverShareId = match[1];
+      if (!id) id = match[1];
+    }
+
+    if (n || r || t || id || img || serverShareId) {
       setSharedCardFromUrl({
+        id: serverShareId,
         name: n ? decodeURIComponent(n) : 'GOA BUILDER',
         role: r ? decodeURIComponent(r) : 'HACKER',
         title: t ? decodeURIComponent(t) : 'THE SHIP-IT ENGINEER',
