@@ -155,6 +155,9 @@ ${shareUrl}
 
   const handleShareToX = async () => {
     setShareState('sharing');
+    // Open blank window synchronously on user click to prevent browser popup blocker after async await
+    const win = typeof window !== 'undefined' ? window.open('about:blank', '_blank') : null;
+
     try {
       const finalShareUrl = await getOrGenerateShareUrl();
       const postText = generatePostText(finalShareUrl);
@@ -166,13 +169,19 @@ ${shareUrl}
       }
 
       const xIntent = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
-      window.open(xIntent, '_blank');
+
+      if (win && !win.closed) {
+        win.location.href = xIntent;
+      } else {
+        window.location.href = xIntent;
+      }
 
       setShareState('done');
       triggerToast('X INTENT OPENED WITH BUILDER POST ✦');
       setTimeout(() => setShareState('idle'), 2500);
     } catch (err) {
       console.error('Share error:', err);
+      if (win && !win.closed) win.close();
       setShareState('idle');
       triggerToast('Opened Twitter/X sharing intent.');
     }
