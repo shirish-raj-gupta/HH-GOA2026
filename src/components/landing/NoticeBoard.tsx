@@ -42,7 +42,7 @@ export const NoticeBoard: React.FC<NoticeBoardProps> = ({ onStart }) => {
             HHGoa '26: Selection & Residency
           </h3>
           <p className="font-mono text-xs text-goa-green-deep/70 text-center mb-4 leading-relaxed">
-            Open trials → Alpha selections → Delta shortlist → 500 elite hackers lock in at Goa from Oct 28–31.
+            Open Trials (Aug) → Partner Trials (Sep) → RSVP & Stake (Late Sep) → 247 builders lock in at Goa from Oct 28–31.
           </p>
           <div className="text-center">
             <a

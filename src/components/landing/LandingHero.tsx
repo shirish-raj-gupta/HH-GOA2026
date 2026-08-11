@@ -1,9 +1,7 @@
 import React from 'react';
 import { CreationMode } from '../../types';
 import { HeroCardPreview } from './HeroCardPreview';
-import { RoadmapSignpost } from './RoadmapSignpost';
 import { SelectionFramework } from './SelectionFramework';
-import { HouseSchedule } from './HouseSchedule';
 import { NoticeBoard } from './NoticeBoard';
 import heroBgImg from '../../../assets/image.png';
 
@@ -102,11 +100,9 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onStart }) => {
         </div>
       </section>
 
-      {/* ROADMAP, SELECTION FRAMEWORK, SCHEDULE & NOTICE BOARD */}
+      {/* OFFICIAL SELECTION FRAMEWORK & NOTICE BOARD */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16">
-        <RoadmapSignpost />
         <SelectionFramework />
-        <HouseSchedule />
         <NoticeBoard onStart={onStart} />
       </div>
     </div>
