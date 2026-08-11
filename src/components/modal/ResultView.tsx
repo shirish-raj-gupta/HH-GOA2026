@@ -63,49 +63,18 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
 
   const getOrGenerateShareUrl = async (): Promise<string> => {
     if (cachedShareUrl) return cachedShareUrl;
-    if (result.shareUrl) {
-      setCachedShareUrl(result.shareUrl);
-      return result.shareUrl;
-    }
 
-    const fallbackId = (result.builderId || '').replace(/[^a-zA-Z0-9]/g, '') || Math.random().toString(36).substring(2, 10);
+    const n = encodeURIComponent(result.name || 'GOA BUILDER');
+    const r = encodeURIComponent(result.role || 'HACKER');
+    const t = encodeURIComponent(result.title || 'THE SHIP-IT ENGINEER');
+    const id = encodeURIComponent(result.builderId || '#HH-GOA-2026');
+    const m = result.mode || 'builder';
+
     const cleanOrigin = window.location.origin.replace(/\/$/, '');
-    const fallbackUrl = `${cleanOrigin}/share/${fallbackId}`;
+    const urlStateLink = `${cleanOrigin}/share?n=${n}&r=${r}&t=${t}&id=${id}&m=${m}`;
 
-    try {
-      const compressedImage = await compressDataUrl(result.imageDataUrl);
-      const response = await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageDataUrl: compressedImage,
-          name: result.name,
-          role: result.role,
-          title: result.title,
-          mode: result.mode,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.shareUrl) {
-          setCachedShareUrl(data.shareUrl);
-          return data.shareUrl;
-        }
-      } else if (response.status === 429) {
-        triggerToast('RATE LIMIT: PLEASE WAIT A MOMENT BEFORE SHARING AGAIN ✦');
-      } else {
-        const errData = await response.json().catch(() => ({}));
-        if (errData.error) {
-          triggerToast(errData.error.toUpperCase());
-        }
-      }
-    } catch (err) {
-      console.warn('Share API request failed:', err);
-    }
-
-    setCachedShareUrl(fallbackUrl);
-    return fallbackUrl;
+    setCachedShareUrl(urlStateLink);
+    return urlStateLink;
   };
 
   const generatePostText = (shareUrl: string) => {

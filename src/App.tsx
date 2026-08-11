@@ -46,19 +46,30 @@ export default function App() {
   const [renderedDataUrl, setRenderedDataUrl] = useState<string | null>(null);
   const [generatedResult, setGeneratedResult] = useState<GeneratedResult | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [shareIdFromUrl, setShareIdFromUrl] = useState<string | null>(null);
+  const [sharedCardFromUrl, setSharedCardFromUrl] = useState<{
+    name: string;
+    role: string;
+    title: string;
+    builderId: string;
+    mode: 'builder' | 'pfp';
+  } | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    let shareId = params.get('shareId');
-    if (!shareId) {
-      const match = window.location.pathname.match(/^\/(?:share|s)\/([a-zA-Z0-9_-]+)/);
-      if (match) {
-        shareId = match[1];
-      }
-    }
-    if (shareId) {
-      setShareIdFromUrl(shareId);
+    const n = params.get('n') || params.get('name');
+    const r = params.get('r') || params.get('role');
+    const t = params.get('t') || params.get('title');
+    const id = params.get('id') || params.get('shareId');
+    const m = (params.get('m') || params.get('mode') || 'builder') as 'builder' | 'pfp';
+
+    if (n || r || t || id) {
+      setSharedCardFromUrl({
+        name: n ? decodeURIComponent(n) : 'GOA BUILDER',
+        role: r ? decodeURIComponent(r) : 'HACKER',
+        title: t ? decodeURIComponent(t) : 'THE SHIP-IT ENGINEER',
+        builderId: id ? decodeURIComponent(id) : '#HH-GOA-2026',
+        mode: m,
+      });
     }
   }, []);
 
@@ -143,14 +154,14 @@ export default function App() {
         <div className="absolute inset-0 grid-bg-gold opacity-20" />
       </div>
 
-      {/* Shared Card Modal Overlay if URL has shareId */}
-      {shareIdFromUrl && (
+      {/* Shared Card Modal Overlay if URL has share state */}
+      {sharedCardFromUrl && (
         <SharedViewModal
-          shareId={shareIdFromUrl}
+          cardInfo={sharedCardFromUrl}
           onCloseAndCreateOwn={() => {
-            setShareIdFromUrl(null);
+            setSharedCardFromUrl(null);
             if (typeof window !== 'undefined' && window.history) {
-              window.history.replaceState({}, '', window.location.pathname);
+              window.history.replaceState({}, '', '/');
             }
           }}
         />
