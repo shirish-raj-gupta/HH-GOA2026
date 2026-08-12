@@ -187,11 +187,13 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
     return urlStateLink;
   };
 
-  const generatePostText = (shareUrl: string) => {
+  const generatePostText = () => {
     const nameStr = result.name && result.name.trim() ? result.name.trim() : 'GOA BUILDER';
     const idStr = result.builderId || '#HH-GOA-7757';
+    const vercelUrl = 'https://hh-goa-2026-beta.vercel.app/';
+
     if (result.mode === 'builder') {
-      return `🌴 Built my Hacker Goa House Builder Card!
+      return `🌴 Built my Hacker House Goa Builder Card!
 
 👤 ${nameStr}
 🪪 Builder ID: ${idStr}
@@ -199,7 +201,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onMakeAnother })
 Excited to build, ship, and connect with amazing builders in Goa. 🚀
 
 Create your own Builder Card:
-${shareUrl}
+${vercelUrl}
 
 #FrameInGoa #HHGoa2026`;
     } else {
@@ -211,7 +213,7 @@ ${shareUrl}
 Excited to build, ship, and connect with amazing builders in Goa. 🚀
 
 Create your own PFP Frame:
-${shareUrl}
+${vercelUrl}
 
 #FrameInGoa #HHGoa2026`;
     }
@@ -220,8 +222,7 @@ ${shareUrl}
   const handleShareToX = () => {
     setShareState('sharing');
     try {
-      const finalShareUrl = getShareUrlSync();
-      const postText = generatePostText(finalShareUrl);
+      const postText = generatePostText();
 
       if (navigator.clipboard) {
         navigator.clipboard.writeText(postText).catch(() => {});
@@ -229,7 +230,6 @@ ${shareUrl}
 
       const xIntent = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
       
-      // Direct synchronous window.open is trusted by all desktop and mobile browsers
       const win = window.open(xIntent, '_blank');
       if (!win) {
         window.location.href = xIntent;
