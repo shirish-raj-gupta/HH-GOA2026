@@ -70,8 +70,8 @@ async function getDefaultSampleImage(): Promise<HTMLCanvasElement | HTMLImageEle
       const data = imgData.data;
 
       const cx = 493;
-      const cy = 522;
-      const radius = 258;
+      const cy = 500;
+      const radius = 246;
 
       for (let y = 0; y < offscreen.height; y++) {
         for (let x = 0; x < offscreen.width; x++) {
@@ -298,8 +298,8 @@ export async function renderBuilderCard({
   ctx.scale(scaleFactor, scaleFactor);
 
   const cx = 493;
-  const cy = 522;
-  const r = 260;
+  const cy = 500;
+  const r = 250;
 
   if (image) {
     ctx.save();
