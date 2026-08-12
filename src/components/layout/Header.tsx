@@ -32,13 +32,18 @@ export const Header: React.FC<HeaderProps> = ({ currentStep, onNavigate }) => {
 
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-display text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-goa-gold via-[#FFF2C2] to-goa-gold bg-clip-text text-transparent group-hover:from-goa-pink group-hover:to-pink-400 transition-all leading-none">
-                HACKERHOUSE
+              <span className="font-['Anybody',sans-serif] font-black text-lg sm:text-xl tracking-wider uppercase leading-none flex items-center">
+                <span className="bg-gradient-to-r from-goa-gold via-[#FFF2C2] to-amber-400 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(230,175,46,0.4)] group-hover:from-amber-200 group-hover:to-goa-gold transition-all">
+                  HACKER
+                </span>
+                <span className="bg-gradient-to-r from-goa-pink via-pink-400 to-pink-500 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,45,120,0.5)] group-hover:from-pink-300 group-hover:to-goa-pink transition-all">
+                  HOUSE
+                </span>
               </span>
-              <span className="bg-goa-pink text-white text-xs font-extrabold px-2 py-0.5 rounded-md shadow-sm tracking-wide">
+              <span className="bg-gradient-to-r from-goa-pink to-pink-600 text-white text-xs font-black px-2 py-0.5 rounded-md shadow-[0_2px_10px_rgba(255,45,120,0.4)] border border-white/20 tracking-wider transform group-hover:scale-105 transition-transform">
                 गोवा
               </span>
-              <span className="bg-goa-pink/20 text-goa-pink border border-goa-pink/40 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">
+              <span className="bg-goa-gold/15 text-goa-gold border border-goa-gold/40 text-[10px] font-mono font-black px-1.5 py-0.5 rounded-md uppercase tracking-widest shadow-sm">
                 '26
               </span>
             </div>
