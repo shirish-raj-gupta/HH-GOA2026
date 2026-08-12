@@ -47,10 +47,10 @@ export const Header: React.FC<HeaderProps> = ({ currentStep, onNavigate }) => {
                 '26
               </span>
             </div>
-            <div className="hidden xs:flex items-center gap-1.5 mt-1">
+            <div className="flex items-center gap-1.5 mt-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)] shrink-0" />
-              <span className="font-mono text-[9px] sm:text-[10px] text-[#F5F0E1]/60 tracking-widest uppercase font-semibold truncate">
-                BUILDER STUDIO · OFFICIAL PASS
+              <span className="font-mono text-[9px] sm:text-[10px] text-[#F5F0E1]/70 tracking-widest uppercase font-bold truncate">
+                2:47 PM STUDIO
               </span>
             </div>
           </div>
