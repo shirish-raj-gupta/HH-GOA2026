@@ -19,6 +19,7 @@ export interface BuilderState {
   title: string;
   tags: string[];
   builderId: string;
+  baseUrl?: string;
 }
 
 export interface GeneratedResult {

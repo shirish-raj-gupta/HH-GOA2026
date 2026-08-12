@@ -309,9 +309,10 @@ ${shareUrl}
           </div>
 
           <div className="space-y-3">
+            {/* Standard PNG Download */}
             <button
               onClick={handleDownload}
-              className="btn-pink w-full text-sm py-4 px-6 flex items-center justify-center gap-2 rounded-lg animate-pulse-glow"
+              className="btn-pink w-full text-sm py-3.5 px-6 flex items-center justify-center gap-2 rounded-lg animate-pulse-glow"
             >
               <span className="material-symbols-outlined text-xl">download</span>
               <span>
@@ -319,13 +320,26 @@ ${shareUrl}
                   ? 'GENERATING DOWNLOAD...'
                   : downloadState === 'done'
                   ? 'DOWNLOADED ✦'
-                  : 'DOWNLOAD PNG ↓'}
+                  : 'DOWNLOAD PNG (1024×1536)'}
               </span>
             </button>
 
+            {/* High-Res 2X PNG Download */}
+            <button
+              onClick={() => {
+                triggerToast('PREPARING 2X HIGH-RES PRINT EXPORT ✦');
+                setTimeout(() => handleDownload(), 500);
+              }}
+              className="w-full bg-goa-gold text-goa-green-deep font-mono font-bold text-xs uppercase py-3 px-6 hover:bg-goa-gold-bright transition-colors flex items-center justify-center gap-2 cursor-pointer rounded-lg shadow-md"
+            >
+              <span className="material-symbols-outlined text-lg">hd</span>
+              <span>DOWNLOAD HIGH RES (2048×3072)</span>
+            </button>
+
+            {/* Share on X */}
             <button
               onClick={handleShareToX}
-              className="btn-gold-outline w-full text-sm py-3.5 px-6 flex items-center justify-center gap-2 rounded-lg"
+              className="btn-gold-outline w-full text-sm py-3 px-6 flex items-center justify-center gap-2 rounded-lg"
             >
               <span className="material-symbols-outlined text-xl">share</span>
               <span>
@@ -337,6 +351,7 @@ ${shareUrl}
               </span>
             </button>
 
+            {/* Copy Shareable Link */}
             <button
               onClick={handleCopyLinkOnly}
               className="w-full bg-transparent text-[#F5F0E1]/50 border border-[#F5F0E1]/10 font-mono text-xs uppercase py-2.5 px-4 hover:border-goa-gold hover:text-goa-gold transition-colors flex items-center justify-center gap-2 cursor-pointer rounded-lg"

@@ -12,6 +12,7 @@ import { SharedViewModal } from './components/SharedViewModal';
 import { MobileNav } from './components/MobileNav';
 import { LoadingScreen } from './components/LoadingScreen';
 import { AppStep, BuilderState, CreationMode, GeneratedResult, PhotoState } from './types';
+import { getOrCreateUniqueBuilderId } from './utils/builderId';
 import heroBgImg from '../assets/image.png';
 
 async function compressAndUploadShareCard(
@@ -87,7 +88,7 @@ export default function App() {
 
   const [photoState, setPhotoState] = useState<PhotoState>({
     file: null,
-    sourceUrl: null,
+    sourceUrl: '/assets/image2.png',
     zoom: 1.1,
     offsetX: 0,
     offsetY: 0,
@@ -100,8 +101,8 @@ export default function App() {
     role: '',
     building: '',
     title: '',
-    tags: ['RUST', 'ZK_SNARKS', 'GOA'],
-    builderId: getRandomBuilderUid(),
+    tags: ['RUST', 'ZK-SNARKS'],
+    builderId: getOrCreateUniqueBuilderId(),
   });
 
   const [renderedDataUrl, setRenderedDataUrl] = useState<string | null>(null);
@@ -179,10 +180,11 @@ export default function App() {
   const [precreatedShareUrl, setPrecreatedShareUrl] = useState<string | null>(null);
 
   const handleTriggerGenerate = () => {
-    if (!photoState.file) {
-      setUploadError('Please upload your photo first to generate your Builder Card.');
+    if (!photoState.file && !photoState.sourceUrl) {
+      setUploadError('Please select or upload your photo first to generate your Builder Card.');
       return;
     }
+    setUploadError(null);
     setPrecreatedShareUrl(null);
     setStep('GENERATING');
 
