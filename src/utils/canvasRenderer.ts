@@ -226,17 +226,12 @@ export async function renderPfpFrame({ image, photoState }: RenderPfpOptions): P
 
   ctx.clearRect(0, 0, width, height);
 
-  let photoToDraw = image;
-  if (!photoToDraw) {
-    photoToDraw = await getDefaultSamplePhoto();
-  }
-
   const apertureRadius = 296;
   const apertureDiameter = apertureRadius * 2;
   const cx = 540;
   const cy = 519;
 
-  if (photoToDraw) {
+  if (image) {
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, apertureRadius, 0, Math.PI * 2);
@@ -249,7 +244,7 @@ export async function renderPfpFrame({ image, photoState }: RenderPfpOptions): P
       ctx.filter = 'contrast(105%) brightness(100%)';
     }
 
-    const imgAspect = photoToDraw.naturalWidth / photoToDraw.naturalHeight;
+    const imgAspect = image.naturalWidth / image.naturalHeight;
     let renderW = apertureDiameter * photoState.zoom;
     let renderH = renderW / imgAspect;
     if (imgAspect > 1) {
@@ -263,7 +258,14 @@ export async function renderPfpFrame({ image, photoState }: RenderPfpOptions): P
     const posX = frameX + (apertureDiameter - renderW) / 2 + photoState.offsetX * (apertureDiameter / 300);
     const posY = frameY + (apertureDiameter - renderH) / 2 + photoState.offsetY * (apertureDiameter / 300);
 
-    ctx.drawImage(photoToDraw, posX, posY, renderW, renderH);
+    ctx.drawImage(image, posX, posY, renderW, renderH);
+    ctx.restore();
+  } else {
+    ctx.save();
+    ctx.fillStyle = '#0F2417';
+    ctx.beginPath();
+    ctx.arc(cx, cy, apertureRadius, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
@@ -299,12 +301,7 @@ export async function renderBuilderCard({
   const cy = 522;
   const r = 260;
 
-  let photoToDraw = image;
-  if (!photoToDraw) {
-    photoToDraw = await getDefaultSamplePhoto();
-  }
-
-  if (photoToDraw) {
+  if (image) {
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -317,7 +314,7 @@ export async function renderBuilderCard({
       ctx.filter = 'contrast(105%) brightness(100%)';
     }
 
-    const imgAspect = photoToDraw.naturalWidth / photoToDraw.naturalHeight;
+    const imgAspect = image.naturalWidth / image.naturalHeight;
     const targetAspect = 1;
 
     const frameW = r * 2;
@@ -339,7 +336,14 @@ export async function renderBuilderCard({
     const posX = frameX + (frameW - renderW) / 2 + photoState.offsetX * (frameW / 300);
     const posY = frameY + (frameH - renderH) / 2 + photoState.offsetY * (frameH / 300);
 
-    ctx.drawImage(photoToDraw, posX, posY, renderW, renderH);
+    ctx.drawImage(image, posX, posY, renderW, renderH);
+    ctx.restore();
+  } else {
+    ctx.save();
+    ctx.fillStyle = '#0F2417';
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
