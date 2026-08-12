@@ -338,6 +338,7 @@ export default function App() {
                 builderState={builderState}
                 onSelectMode={(newMode) => setMode(newMode)}
                 onRenderedDataUrlChange={(dataUrl) => setRenderedDataUrl(dataUrl)}
+                onPhotoStateChange={setPhotoState}
               />
             </div>
           </div>

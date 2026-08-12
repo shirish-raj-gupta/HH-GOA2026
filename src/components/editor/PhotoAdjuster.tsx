@@ -12,28 +12,33 @@ interface PhotoAdjusterProps {
 export const PhotoAdjuster: React.FC<PhotoAdjusterProps> = ({
   photoState,
   onChangeZoom,
-  onChangeOffset,
   onToggleBwFilter,
   onReset,
 }) => {
   return (
     <div className="border-2 border-[#F5F0E1]/10 rounded-lg p-4 bg-goa-green-deep space-y-4">
       <div className="flex justify-between items-center border-b border-[#F5F0E1]/10 pb-2">
-        <span className="font-mono text-xs text-goa-gold uppercase tracking-wider">
-          
+        <span className="font-mono text-xs text-goa-gold uppercase tracking-wider font-bold flex items-center gap-1.5">
+          <span className="material-symbols-outlined text-sm">tune</span>
+          PHOTO ADJUSTMENTS
         </span>
         <button
           type="button"
           onClick={onReset}
-          className="font-mono text-[10px] text-[#F5F0E1]/40 hover:text-goa-pink underline uppercase cursor-pointer"
+          className="font-mono text-[10px] text-[#F5F0E1]/60 hover:text-goa-pink underline uppercase cursor-pointer"
         >
           RESET
         </button>
       </div>
 
+      <div className="bg-goa-surface border border-goa-gold/30 p-2.5 rounded-lg flex items-center gap-2.5 font-mono text-xs text-goa-gold">
+        <span className="material-symbols-outlined text-lg text-goa-pink shrink-0">drag_pan</span>
+        <span>Drag your photo directly on the preview card to reposition it freely.</span>
+      </div>
+
       <div className="space-y-1.5">
         <div className="flex justify-between items-center font-mono text-xs">
-          <label className="text-[#F5F0E1]">ZOOM [Z]</label>
+          <label className="text-[#F5F0E1] font-bold">ZOOM SCALE</label>
           <span className="text-goa-gold font-bold">{photoState.zoom.toFixed(1)}x</span>
         </div>
         <input
@@ -43,46 +48,12 @@ export const PhotoAdjuster: React.FC<PhotoAdjusterProps> = ({
           step="0.05"
           value={photoState.zoom}
           onChange={(e) => onChangeZoom(parseFloat(e.target.value))}
-          className="w-full"
+          className="w-full cursor-pointer accent-goa-pink"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 pt-1">
-        <div className="space-y-1">
-          <div className="flex justify-between font-mono text-[11px] text-[#F5F0E1]/50">
-            <span>OFFSET X</span>
-            <span>{photoState.offsetX}px</span>
-          </div>
-          <input
-            type="range"
-            min="-100"
-            max="100"
-            step="2"
-            value={photoState.offsetX}
-            onChange={(e) => onChangeOffset(parseInt(e.target.value, 10), photoState.offsetY)}
-            className="w-full"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <div className="flex justify-between font-mono text-[11px] text-[#F5F0E1]/50">
-            <span>OFFSET Y</span>
-            <span>{photoState.offsetY}px</span>
-          </div>
-          <input
-            type="range"
-            min="-100"
-            max="100"
-            step="2"
-            value={photoState.offsetY}
-            onChange={(e) => onChangeOffset(photoState.offsetX, parseInt(e.target.value, 10))}
-            className="w-full"
-          />
-        </div>
-      </div>
-
       <div className="pt-2 border-t border-[#F5F0E1]/10 flex items-center justify-between">
-        <label className="font-mono text-xs text-[#F5F0E1] uppercase">
+        <label className="font-mono text-xs text-[#F5F0E1] uppercase font-bold">
           HIGH-CONTRAST B&W FILTER
         </label>
         <button

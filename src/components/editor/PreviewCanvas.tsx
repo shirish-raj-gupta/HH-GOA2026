@@ -8,6 +8,7 @@ interface PreviewCanvasProps {
   builderState: BuilderState;
   onSelectMode?: (mode: CreationMode) => void;
   onRenderedDataUrlChange?: (dataUrl: string) => void;
+  onPhotoStateChange?: (updater: (prev: PhotoState) => PhotoState) => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
@@ -16,12 +17,16 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
   builderState,
   onSelectMode,
   onRenderedDataUrlChange,
+  onPhotoStateChange,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const userPhotoRef = useRef<HTMLImageElement | null>(null);
   const isRenderingRef = useRef(false);
   const pendingRenderRef = useRef(false);
   const [isReady, setIsReady] = useState(false);
+
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<{ x: number; y: number; offsetX: number; offsetY: number } | null>(null);
 
   const photoStateRef = useRef(photoState);
   const builderStateRef = useRef(builderState);
@@ -33,6 +38,46 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
   const modeRef = useRef(mode);
   useEffect(() => { modeRef.current = mode; }, [mode]);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!onPhotoStateChange) return;
+    e.preventDefault();
+    canvasRef.current?.setPointerCapture(e.pointerId);
+    setIsDragging(true);
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      offsetX: photoStateRef.current.offsetX,
+      offsetY: photoStateRef.current.offsetY,
+    };
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!isDragging || !dragStartRef.current || !onPhotoStateChange) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
+
+    const scale = 300 / (canvas.clientWidth || 400);
+    const newOffsetX = Math.round(Math.max(-150, Math.min(150, dragStartRef.current.offsetX + dx * scale)));
+    const newOffsetY = Math.round(Math.max(-150, Math.min(150, dragStartRef.current.offsetY + dy * scale)));
+
+    onPhotoStateChange((prev) => ({
+      ...prev,
+      offsetX: newOffsetX,
+      offsetY: newOffsetY,
+    }));
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (isDragging) {
+      canvasRef.current?.releasePointerCapture(e.pointerId);
+      setIsDragging(false);
+      dragStartRef.current = null;
+    }
+  };
 
   const doRender = useCallback(async () => {
     const canvas = canvasRef.current;
@@ -135,7 +180,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
   ]);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center relative space-y-4">
+    <div className="w-full flex flex-col items-center justify-center relative space-y-3">
       <div className="w-full bg-goa-green-deep/90 backdrop-blur-md border-2 border-goa-gold/30 p-1.5 rounded-xl flex items-center gap-1 font-mono text-xs shadow-lg">
         <button
           type="button"
@@ -179,7 +224,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             ref={canvasRef}
             width={mode === 'pfp' ? 1080 : 1024}
             height={mode === 'pfp' ? 1080 : 1536}
-            className="w-full h-auto block"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            className={`w-full h-auto block touch-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             style={{ display: 'block' }}
           />
           {!isReady && (
@@ -196,7 +245,15 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-goa-gold pointer-events-none z-20" />
       </div>
 
-      <div className="font-mono text-[11px] text-[#F5F0E1]/40 text-center flex items-center justify-center gap-2 pt-1">
+      {/* DRAG INSTRUCTION BADGE BELOW IMAGE */}
+      <div className="w-full max-w-105 sm:max-w-112.5 lg:max-w-115 bg-goa-green-deep/90 border border-goa-gold/40 px-3 py-2 rounded-xl flex items-center justify-center gap-2 font-mono text-xs text-goa-gold shadow-md">
+        <span className="material-symbols-outlined text-sm animate-bounce text-goa-pink">drag_pan</span>
+        <span className="font-bold tracking-wide uppercase text-[10px] sm:text-xs">
+          CLICK & DRAG PHOTO ON PREVIEW TO REPOSITION
+        </span>
+      </div>
+
+      <div className="font-mono text-[10px] text-[#F5F0E1]/40 text-center flex items-center justify-center gap-2 pt-0.5">
         <span className="w-1.5 h-1.5 bg-goa-gold rounded-full" />
         <span>HIGH-RES 300 DPI RENDER · INSTANT PNG EXPORT</span>
       </div>

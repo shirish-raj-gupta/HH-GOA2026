@@ -70,15 +70,22 @@ async function getDefaultSampleImage(): Promise<HTMLCanvasElement | HTMLImageEle
       const data = imgData.data;
 
       const cx = 493;
-      const cy = 500;
-      const radius = 246;
+      const cy = 515;
+      const radius = 290;
 
       for (let y = 0; y < offscreen.height; y++) {
         for (let x = 0; x < offscreen.width; x++) {
           const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
           if (dist <= radius) {
             const idx = (y * offscreen.width + x) * 4;
-            data[idx + 3] = 0;
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
+
+            const isKraft = r > 130 && g > 100 && b > 55 && r > g;
+            if (!isKraft) {
+              data[idx + 3] = 0;
+            }
           }
         }
       }
@@ -298,8 +305,16 @@ export async function renderBuilderCard({
   ctx.scale(scaleFactor, scaleFactor);
 
   const cx = 493;
-  const cy = 500;
-  const r = 250;
+  const cy = 515;
+  const r = 282;
+
+  // Solid background circle drawn FIRST so no black canvas space can ever show through
+  ctx.save();
+  ctx.fillStyle = '#0E2216';
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 
   if (image) {
     ctx.save();
@@ -315,7 +330,6 @@ export async function renderBuilderCard({
     }
 
     const imgAspect = image.naturalWidth / image.naturalHeight;
-    const targetAspect = 1;
 
     const frameW = r * 2;
     const frameH = r * 2;
@@ -325,7 +339,7 @@ export async function renderBuilderCard({
     let renderW: number;
     let renderH: number;
 
-    if (imgAspect > targetAspect) {
+    if (imgAspect >= 1) {
       renderH = frameH * photoState.zoom;
       renderW = renderH * imgAspect;
     } else {
@@ -333,17 +347,19 @@ export async function renderBuilderCard({
       renderH = renderW / imgAspect;
     }
 
+    if (renderH < frameH * 1.05) {
+      renderH = frameH * 1.05;
+      renderW = renderH * imgAspect;
+    }
+    if (renderW < frameW * 1.05) {
+      renderW = frameW * 1.05;
+      renderH = renderW / imgAspect;
+    }
+
     const posX = frameX + (frameW - renderW) / 2 + photoState.offsetX * (frameW / 300);
     const posY = frameY + (frameH - renderH) / 2 + photoState.offsetY * (frameH / 300);
 
     ctx.drawImage(image, posX, posY, renderW, renderH);
-    ctx.restore();
-  } else {
-    ctx.save();
-    ctx.fillStyle = '#0F2417';
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fill();
     ctx.restore();
   }
 
