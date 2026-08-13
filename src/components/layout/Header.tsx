@@ -40,7 +40,15 @@ export const Header: React.FC<HeaderProps> = ({ currentStep, onNavigate }) => {
                   HOUSE
                 </span>
               </span>
-              <span className="bg-gradient-to-r from-goa-pink to-pink-600 text-white text-[10px] sm:text-xs font-black px-1.5 sm:px-2 py-0.5 rounded-md shadow-[0_2px_10px_rgba(255,45,120,0.4)] border border-white/20 tracking-wider shrink-0">
+              <span
+                className="font-black text-xs sm:text-sm tracking-wider shrink-0 select-none"
+                style={{
+                  color: '#FFFFFF',
+                  WebkitTextStroke: '3.5px #D8005A',
+                  paintOrder: 'stroke fill',
+                  filter: 'drop-shadow(0 2px 6px rgba(216, 0, 90, 0.75))',
+                }}
+              >
                 गोवा
               </span>
               <span className="bg-goa-gold/15 text-goa-gold border border-goa-gold/40 text-[9px] sm:text-[10px] font-mono font-black px-1 sm:px-1.5 py-0.5 rounded-md uppercase tracking-widest shadow-sm shrink-0">

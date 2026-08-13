@@ -44,15 +44,23 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onStart }) => {
               </div>
 
               {/* Expansive Headline */}
-              <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-goa-gold uppercase leading-[0.86] tracking-tight drop-shadow-2xl">
-                PUT YOUR FACE<br />
-                ON THE BUILDER<br />
-                <span className="relative inline-block text-white">
-                  MAP.
-                  <span className="absolute -top-4 -right-16 sm:-right-24 bg-goa-pink text-white font-display text-xl sm:text-3xl font-black px-4 py-1 rounded-xl shadow-2xl transform -rotate-6 animate-float border-2 border-white/30">
+              <h1 className="font-display text-3xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-goa-gold uppercase leading-[0.92] tracking-tight drop-shadow-2xl space-y-1 sm:space-y-2">
+                <div>PUT YOUR FACE</div>
+                <div>ON THE BUILDER</div>
+                <div className="flex items-center gap-3.5 flex-wrap text-white pt-1">
+                  <span>MAP.</span>
+                  <span
+                    className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-wider transform -rotate-3 animate-float shrink-0 select-none"
+                    style={{
+                      color: '#FFFFFF',
+                      WebkitTextStroke: '7px #D8005A',
+                      paintOrder: 'stroke fill',
+                      filter: 'drop-shadow(0 4px 14px rgba(216, 0, 90, 0.85))',
+                    }}
+                  >
                     गोवा
                   </span>
-                </span>
+                </div>
               </h1>
 
               {/* Description Subtext */}
