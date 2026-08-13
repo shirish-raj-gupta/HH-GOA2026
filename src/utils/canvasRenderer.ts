@@ -71,12 +71,16 @@ async function getDefaultSampleImage(): Promise<HTMLCanvasElement | HTMLImageEle
 
       const cx = 493;
       const cy = 515;
-      const radius = 290;
+      const innerRadius = 275;
+      const outerRadius = 290;
 
       for (let y = 0; y < offscreen.height; y++) {
         for (let x = 0; x < offscreen.width; x++) {
           const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
-          if (dist <= radius) {
+          if (dist <= innerRadius) {
+            const idx = (y * offscreen.width + x) * 4;
+            data[idx + 3] = 0;
+          } else if (dist <= outerRadius) {
             const idx = (y * offscreen.width + x) * 4;
             const r = data[idx];
             const g = data[idx + 1];
